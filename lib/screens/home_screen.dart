@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const ModelsSection(isActive: true),
       const PromoSection(
         isActive: true,
-        assetPath: 'assets/images/unsplash_car.jpg',
+        assetPath: 'assets/images/utility/911.jpg',
         title: 'Our Services',
         description: 'Quality and excellence for your vehicle.',
         buttonText: 'Learn More',

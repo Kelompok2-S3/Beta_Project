@@ -8,8 +8,8 @@ class CarCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Data is now fetched from the central car_data.dart file
-    final List<CarModel> cars = carouselCars;
+    // Create a shuffled list of cars and take the first 4, preserving the type
+    final List<CarModel> cars = (carouselCars.toList()..shuffle()).take(4).toList();
 
     return SizedBox(
       height: 350,

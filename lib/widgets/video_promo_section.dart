@@ -3,7 +3,8 @@ import 'package:video_player/video_player.dart';
 
 class VideoPromoSection extends StatefulWidget {
   final bool isActive;
-  final String videoPath;
+  final String? videoPath;
+  final String? imagePath; // Added imagePath
   final String title;
   final String description;
   final String buttonText;
@@ -11,42 +12,48 @@ class VideoPromoSection extends StatefulWidget {
   const VideoPromoSection({
     super.key,
     required this.isActive,
-    required this.videoPath,
+    this.videoPath,
+    this.imagePath, // Added to constructor
     required this.title,
     required this.description,
     required this.buttonText,
-  });
+  }) : assert(videoPath != null || imagePath != null, 'Either videoPath or imagePath must be provided.');
 
   @override
   State<VideoPromoSection> createState() => _VideoPromoSectionState();
 }
 
 class _VideoPromoSectionState extends State<VideoPromoSection> {
-  late VideoPlayerController _controller;
-  bool _isMuted = true; // Video dimulai dalam keadaan senyap
+  VideoPlayerController? _controller; // Made nullable
+  bool _isMuted = true;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(widget.videoPath)
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.play();
-        _controller.setLooping(true);
-        _controller.setVolume(_isMuted ? 0 : 1.0);
-      });
+    if (widget.videoPath != null) { // Conditional initialization
+      _controller = VideoPlayerController.asset(widget.videoPath!)
+        ..initialize().then((_) {
+          if (mounted) {
+            setState(() {});
+            _controller?.play();
+            _controller?.setLooping(true);
+            _controller?.setVolume(_isMuted ? 0 : 1.0);
+          }
+        });
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose(); // Dispose only if it exists
     super.dispose();
   }
 
   void _toggleSound() {
+    if (_controller == null) return;
     setState(() {
       _isMuted = !_isMuted;
-      _controller.setVolume(_isMuted ? 0 : 1.0);
+      _controller!.setVolume(_isMuted ? 0 : 1.0);
     });
   }
 
@@ -56,22 +63,26 @@ class _VideoPromoSectionState extends State<VideoPromoSection> {
       height: 500,
       color: Colors.black,
       child: Stack(
+        fit: StackFit.expand, // Ensure children fill the stack
         children: [
-          // --- Background Video ---
-          if (_controller.value.isInitialized)
-            SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _controller.value.size.width,
-                  height: _controller.value.size.height,
-                  child: VideoPlayer(_controller),
-                ),
+          // --- Background ---
+          if (widget.imagePath != null)
+            Image.asset(
+              widget.imagePath!,
+              fit: BoxFit.cover,
+            )
+          else if (_controller != null && _controller!.value.isInitialized)
+            FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _controller!.value.size.width,
+                height: _controller!.value.size.height,
+                child: VideoPlayer(_controller!),
               ),
             )
           else
             const Center(child: CircularProgressIndicator()),
-          
+
           // --- Gradient Overlay ---
           Container(
             decoration: BoxDecoration(
@@ -117,19 +128,20 @@ class _VideoPromoSectionState extends State<VideoPromoSection> {
             ),
           ),
 
-          // --- Tombol Suara ---
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: IconButton(
-              icon: Icon(
-                _isMuted ? Icons.volume_off : Icons.volume_up,
-                color: Colors.white,
-                size: 30,
+          // --- Tombol Suara (Sound Button) ---
+          if (widget.videoPath != null) // Only show for videos
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: IconButton(
+                icon: Icon(
+                  _isMuted ? Icons.volume_off : Icons.volume_up,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: _toggleSound,
               ),
-              onPressed: _toggleSound,
             ),
-          ),
         ],
       ),
     );

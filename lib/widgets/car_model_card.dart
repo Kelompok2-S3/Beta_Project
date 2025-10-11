@@ -19,20 +19,20 @@ class CarModelCard extends StatelessWidget {
         );
       },
       child: Container(
-        width: 500, // Fixed width for each card
+        width: 300, // Reduced width for a more compact card
         margin: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 300,
+              height: 200, // Reduced image height
               width: double.infinity,
               child: Image.asset(
-                model.assetPath, 
+                model.assetPath,
                 fit: BoxFit.contain,
               ),
             ),
-            const SizedBox(height: 500),
+            const SizedBox(height: 10), // Drastically reduced space to fix overflow
             Text(
               model.name,
               style: const TextStyle(
@@ -40,6 +40,8 @@ class CarModelCard extends StatelessWidget {
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
+              maxLines: 1, // Prevent text from wrapping and causing overflow
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 5),
             Text(
@@ -48,8 +50,9 @@ class CarModelCard extends StatelessWidget {
                 color: Colors.white70,
                 fontSize: 14,
               ),
+              maxLines: 2, // Limit description to 2 lines
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 100), // Added space at the bottom
           ],
         ),
       ),

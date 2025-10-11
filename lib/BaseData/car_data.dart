@@ -57,8 +57,15 @@ import '../data/willys_data.dart';
 import '../data/casey_currie_motorsports_data.dart';
 import '../data/universal_studios_data.dart';
 
-// Data for the main carousel, sourced from Koenigsegg data
-final List<CarModel> carouselCars = koenigseggCars;
+// Data for the main carousel, combining multiple brands
+final List<CarModel> carouselCars = [
+  ...ferrariCars,
+  ...lamborghiniCars,
+  ...koenigseggCars, // Still included in case data is added later
+  ...porscheCars,
+  ...bugattiCars,
+  ...mclarenCars,
+];
 
 // Data for the app menu, combining all car data
 final Map<String, List<CarModel>> menuCars = {

@@ -60,7 +60,7 @@ class _AppHomePageState extends State<AppHomePage> {
       // --- Path video diperbarui untuk VideoPromoSection ---
       const VideoPromoSection(
         isActive: true,
-        videoPath: 'assets/videos/Forza4.mp4', // Menggunakan video yang sama
+        imagePath: 'assets/images/utility/911.jpg', // Menggunakan gambar
         title: 'Our Services',
         description: 'Quality and excellence for your vehicle.',
         buttonText: 'Learn More',
