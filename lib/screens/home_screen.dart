@@ -37,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     final screenHeight = MediaQuery.of(context).size.height;
     setState(() {
-      // Normalize the scroll offset to a 0.0-1.0 range for the first screen
       _scrollOffset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
     });
   }
@@ -50,9 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // A single list of widgets for a continuous scrolling experience
     final List<Widget> sections = [
-      // --- Path video diperbarui ---
       CinematicHeroSection(
         pageOffset: _scrollOffset,
         videoPath: 'assets/videos/Forza4.mp4',
@@ -61,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const PromoSection(
         isActive: true,
         assetPath: 'assets/images/utility/911.jpg',
-        title: 'Our Services',
+        title: 'Our Experience', // Changed from 'Our Services'
         description: 'Quality and excellence for your vehicle.',
         buttonText: 'Learn More',
       ),
@@ -70,15 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.black, // Set background to black
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Use a ListView for smooth, continuous scrolling
           ListView(
             controller: _scrollController,
             children: sections,
           ),
-          // The Header, which animates based on scroll
           Positioned(
             top: 0,
             left: 0,
@@ -89,10 +84,16 @@ class _HomeScreenState extends State<HomeScreen> {
               isMenuOpen: _isMenuOpen,
             ),
           ),
-          // The App-style menu
-          AppMenu(
-            isMenuOpen: _isMenuOpen,
-            toggleMenu: _toggleMenu,
+          AnimatedOpacity(
+            opacity: _isMenuOpen ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 600),
+            child: IgnorePointer(
+              ignoring: !_isMenuOpen,
+              child: AppMenu(
+                isMenuOpen: _isMenuOpen,
+                toggleMenu: _toggleMenu,
+              ),
+            ),
           ),
         ],
       ),

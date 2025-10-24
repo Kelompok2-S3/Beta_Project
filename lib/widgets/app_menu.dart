@@ -1,5 +1,6 @@
-import 'package:beta_project/data/car_database.dart'; // Corrected import path
+import 'package:beta_project/data/car_database.dart';
 import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,16 +23,14 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   late AnimationController _mainController;
   late AnimationController _subController;
 
-  // State for the new menu logic
   String? _selectedMenu;
   String? _selectedBrand;
 
-  // Pre-processed data for the alphabetical menu
   final Map<String, List<String>> _brandsByLetter = {};
   final Map<String, List<CarModel>> _modelsByBrand = {};
 
-  // Main menu categories
-  final List<String> _mainMenuItems = ['Models', 'Shopping Tools', 'Services'];
+  // Mengubah daftar menu utama menjadi 'Product' dan 'About'
+  final List<String> _mainMenuItems = ['Product', 'About'];
 
   @override
   void initState() {
@@ -39,8 +38,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
     _mainController = AnimationController(vsync: this, duration: 600.ms);
     _subController = AnimationController(vsync: this, duration: 400.ms);
 
-    // --- Data Processing for Performance ---
-    // 1. Group all car models by their brand name.
     for (var car in allCars) {
       if (!_modelsByBrand.containsKey(car.brand)) {
         _modelsByBrand[car.brand] = [];
@@ -48,9 +45,8 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       _modelsByBrand[car.brand]!.add(car);
     }
 
-    // 2. Group all brand names by their first letter.
     List<String> brands = _modelsByBrand.keys.toList();
-    brands.sort(); // Sort brands alphabetically
+    brands.sort();
     for (var brand in brands) {
       if (brand.isNotEmpty) {
         String firstLetter = brand.substring(0, 1).toUpperCase();
@@ -69,7 +65,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       _mainController.forward();
     } else {
       _mainController.reverse();
-      // Reset state when menu closes
       setState(() {
         _selectedMenu = null;
         _selectedBrand = null;
@@ -85,14 +80,23 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   }
 
   void _onMainMenuSelected(String menuKey) {
+    if (menuKey == 'About') {
+      widget.toggleMenu(); // Close the menu
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AboutUsScreen()),
+      );
+      return; // Stop further execution
+    }
+
     setState(() {
       if (_selectedMenu == menuKey) {
-        _selectedMenu = null; // Toggle off
+        _selectedMenu = null;
         _selectedBrand = null;
         _subController.reverse();
       } else {
         _selectedMenu = menuKey;
-        _selectedBrand = null; // Reset brand selection
+        _selectedBrand = null;
         _subController.forward(from: 0.0);
       }
     });
@@ -108,7 +112,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   void _onBackToBrands() {
     setState(() {
       _selectedBrand = null;
-      // Animate back to the brand list
       _subController.reverse().then((_) => _subController.forward());
     });
   }
@@ -124,7 +127,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
           color: Colors.black.withAlpha(230),
           child: Stack(
             children: [
-              // Close Button
               Positioned(
                 top: 20,
                 right: 20,
@@ -139,7 +141,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Main Menu Items (e.g., 'Models')
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.3,
                         child: Column(
@@ -147,7 +148,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
                           children: _mainMenuItems.map((key) => _buildMainMenuItem(key)).toList(),
                         ),
                       ),
-                      // Sub Menu (Alphabetical List, Models, etc.)
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 40),
@@ -184,18 +184,17 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   }
 
   Widget _buildSubMenu() {
-    if (_selectedMenu != 'Models') {
-      // Placeholder for other menu items like 'Shopping Tools'
+    // Menampilkan submenu hanya untuk 'Product'
+    if (_selectedMenu != 'Product') {
       return const SizedBox.shrink();
     }
 
-    // If a brand is selected, show its models.
     if (_selectedBrand != null) {
       final models = _modelsByBrand[_selectedBrand] ?? [];
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildBackButton('Back to Brands', _onBackToBrands),
+          _buildBackButton('Back to Brands'),
           Expanded(
             child: ListView.builder(
               itemCount: models.length,
@@ -206,7 +205,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       );
     }
 
-    // Otherwise, show the alphabetical list of brands.
     final letters = _brandsByLetter.keys.toList();
     return ListView.builder(
       itemCount: letters.length,
@@ -252,9 +250,9 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
     ).animate(controller: _subController).slideX(begin: -0.2, end: 0, duration: 400.ms, curve: Curves.easeOutCubic).fadeIn();
   }
 
-  Widget _buildBackButton(String text, VoidCallback onPressed) {
+  Widget _buildBackButton(String text) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: _onBackToBrands,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
         child: Row(

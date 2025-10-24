@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:beta_project/screens/service_detail_screen.dart'; // Import the new screen
 
 class PromoSection extends StatelessWidget {
   final bool isActive;
-  final String assetPath; // Changed from imageUrl
+  final String assetPath;
   final String title;
   final String description;
   final String buttonText;
@@ -11,7 +12,7 @@ class PromoSection extends StatelessWidget {
   const PromoSection({
     super.key,
     required this.isActive,
-    required this.assetPath, // Changed from imageUrl
+    required this.assetPath,
     required this.title,
     required this.description,
     required this.buttonText,
@@ -19,17 +20,16 @@ class PromoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // DEFINITIVE FIX: Removed fixed height and using padding for a flexible, overflow-proof layout.
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(assetPath), // Changed from CachedNetworkImageProvider
+          image: AssetImage(assetPath),
           fit: BoxFit.cover,
         ),
       ),
       child: Container(
         color: Colors.black.withOpacity(0.5),
-        padding: const EdgeInsets.symmetric(vertical: 120.0, horizontal: 40.0), // Use padding for spacing
+        padding: const EdgeInsets.symmetric(vertical: 120.0, horizontal: 40.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +55,17 @@ class PromoSection extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ServiceDetailScreen(
+                        serviceTitle: title,
+                        serviceDescription: description,
+                      ),
+                    ),
+                  );
+                },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.white, width: 2),
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),

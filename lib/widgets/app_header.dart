@@ -1,6 +1,7 @@
 
 import 'dart:ui';
 import 'package:beta_project/screens/about_us_screen.dart';
+import 'package:beta_project/screens/service_detail_screen_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -70,6 +71,19 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
+    // Function to navigate to the Services screen
+    void navigateToServices() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ServiceDetailScreen2(
+            serviceTitle: 'Our Services',
+            serviceDescription: 'Discover the range of services we offer.',
+          ),
+        ),
+      );
+    }
+
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -107,7 +121,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                 Row(
                   children: [
                     _buildNavButton('Products'),
-                    _buildNavButton('Services'),
+                    _buildNavButton('Services', onPressed: navigateToServices),
                     _buildNavButton('About', onPressed: navigateToAbout),
                     menuButton,
                   ],
