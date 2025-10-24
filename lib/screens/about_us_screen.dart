@@ -40,42 +40,42 @@ class AboutUsScreen extends StatelessWidget {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
                 const SizedBox(height: 40),
 
                 // --- Section 1: Philosophy ---
                 _FuturisticContentBlock(
-                  imagePath: 'assets/images/utility/apollo.png',
+                  imagePath: 'assets/images/utility/f1 old.png',
                   title: 'OUR PHILOSOPHY',
                   content:
-                      'We believe that every car has a story, a soul.',
+                      'The true magic happens when the city lights fade in the rearview mirror. Out here, the road stretches into the horizon, an endless ribbon of possibility. This isn\'t just transportation; it\'s therapy. It’s the one place where the noise of the world is drowned out by the hum of the engine and the rush of the wind. This is freedom, defined not by a destination, but by the profound, moving solitude of the drive itself.',
                   accentColor: accentColor,
                   imageAlignment: Alignment.centerLeft,
-                ).animate().fade(duration: 600.ms).slideX(begin: -0.2, curve: Curves.easeOut),
+                ).animate().fade(duration: 600.ms).slideX(begin: -0.1, curve: Curves.easeOut),
 
                 const SizedBox(height: 40),
 
                 // --- Section 2: Core Values ---
                 _CoreValuesSection(accentColor: accentColor)
-                    .animate().fade(duration: 600.ms, delay: 200.ms).slideY(begin: 0.2, curve: Curves.easeOut),
+                    .animate().fade(duration: 600.ms, delay: 200.ms).slideY(begin: 0.1, curve: Curves.easeOut),
 
                 const SizedBox(height: 40),
 
                 // --- Section 3: Legacy ---
                 _FuturisticContentBlock(
-                  imagePath: 'assets/images/utility/f1 old.png',
+                  imagePath: 'assets/images/utility/apollo.png',
                   title: 'A LEGACY OF SPEED',
                   content:
-                      'to build the most comprehensive and beautifully designed car.',
+                      'A car is not just four wheels and an engine; it\'s a canvas for our personality. It’s the color we choose, the sound it makes, the way we maintain it. It becomes an extension of who we are. When you truly love a car, you don\'t just own it; you form a bond with it. You learn its language, feel its imperfections, and celebrate its strengths. It\'s a mechanical soulmate',
                   accentColor: accentColor,
                   imageAlignment: Alignment.centerRight, // Alternate alignment
-                ).animate().fade(duration: 600.ms).slideX(begin: 0.2, curve: Curves.easeOut),
+                ).animate().fade(duration: 600.ms).slideX(begin: 0.1, curve: Curves.easeOut),
 
                 const SizedBox(height: 50),
               ],
-            ),
+            ), 
           ),
         ],
       ),
@@ -100,70 +100,90 @@ class _FuturisticContentBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isImageLeft = imageAlignment == Alignment.centerLeft;
-    const double overlap = 50.0;
+    const double imageOverlap = 50.0; // How much the image goes off-screen
+    final double screenWidth = MediaQuery.of(context).size.width;
+    const double imageWidthRatio = 0.65; // Image takes 65% of screen width
+    const double textSidePadding = 24.0; // Padding from the screen edge for the text block
+    const double textImageGap = 20.0; // Minimum gap between the image and text
 
-    // **FIX:** Added a SizedBox to give the Stack a defined height.
-    // This prevents the layout from collapsing to zero height.
+    // Calculate the left and right positions for the text block
+    double textLeftPosition;
+    double textRightPosition;
+
+    if (isImageLeft) {
+      // Image is on the left. Text is on the right.
+      // Text starts after the visible part of the image + gap
+      textLeftPosition = (screenWidth * imageWidthRatio) - imageOverlap + textImageGap;
+      // Text ends at the screen edge minus padding
+      textRightPosition = textSidePadding;
+    } else {
+      // Image is on the right. Text is on the left.
+      // Text starts at the screen edge plus padding
+      textLeftPosition = textSidePadding;
+      // Text ends before the visible part of the image + gap
+      textRightPosition = (screenWidth * imageWidthRatio) - imageOverlap + textImageGap;
+    }
+
     return SizedBox(
-      height: 300, // Explicit height for the container
+      height: 320, // Fixed height for the Stack to provide a stable canvas
       child: Stack(
-        clipBehavior: Clip.none, // Allow elements to overlap
+        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
           // --- Clipped Image ---
           Positioned(
-            top: 10, // Adjust vertical position
-            left: isImageLeft ? -overlap : null,
-            right: isImageLeft ? null : -overlap,
+            top: 20,
+            left: isImageLeft ? -imageOverlap : null,
+            right: isImageLeft ? null : -imageOverlap,
             child: ClipPath(
               clipper: _AngularClipper(isLeft: isImageLeft),
               child: Image.asset(
                 imagePath,
                 fit: BoxFit.cover,
                 height: 280,
-                width: MediaQuery.of(context).size.width * 0.65,
+                width: screenWidth * imageWidthRatio,
               ),
             ),
           ),
 
           // --- Text Content ---
-          Positioned.fill(
-            child: Align(
-              alignment: isImageLeft ? Alignment.centerRight : Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.1,
+          Positioned(
+            top: 40,
+            bottom: 40,
+            left: textLeftPosition,
+            right: textRightPosition,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: isImageLeft ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              children: [
+                Text(
+                  title,
+                  textAlign: isImageLeft ? TextAlign.left : TextAlign.right,
+                  style: GoogleFonts.orbitron(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.white,
+                    shadows: [Shadow(color: accentColor.withOpacity(0.7), blurRadius: 10)],
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: isImageLeft ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      textAlign: isImageLeft ? TextAlign.right : TextAlign.left,
-                      style: GoogleFonts.orbitron(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white,
-                        shadows: [Shadow(color: accentColor.withOpacity(0.7), blurRadius: 10)],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: 80,
-                      height: 2,
-                      color: accentColor,
-                      margin: EdgeInsets.only(bottom: 12),
-                    ),
-                    Text(
+                const SizedBox(height: 12),
+                Container(
+                  width: 80,
+                  height: 2,
+                  color: accentColor,
+                  margin: const EdgeInsets.only(bottom: 12),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
                       content,
-                      textAlign: isImageLeft ? TextAlign.right : TextAlign.left,
+                      textAlign: isImageLeft ? TextAlign.left : TextAlign.right,
                       style: TextStyle(fontSize: 15, color: Colors.grey[300], height: 1.6),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              ],
+            ).animate(delay: 300.ms).fade(duration: 600.ms).slideX(begin: isImageLeft ? 0.2 : -0.2, curve: Curves.easeOut),
           ),
         ],
       ),
