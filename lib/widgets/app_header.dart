@@ -1,7 +1,7 @@
 
 import 'dart:ui';
 import 'package:beta_project/screens/about_us_screen.dart';
-import 'package:beta_project/screens/service_detail_screen_2.dart';
+import 'package:beta_project/screens/discover_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -17,7 +17,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     required this.isMenuOpen,
   });
 
-  // Updated to accept an optional onPressed callback
   Widget _buildNavButton(String text, {VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -46,10 +45,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       icon: AnimatedSwitcher(
         duration: 300.ms,
         transitionBuilder: (child, animation) {
-          return ScaleTransition(
-            scale: animation,
-            child: child,
-          );
+          return ScaleTransition(scale: animation, child: child);
         },
         child: Icon(
           isMenuOpen ? Icons.close : Icons.menu,
@@ -59,11 +55,10 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+        overlayColor: WidgetStateProperty.all(Colors.white.withAlpha(26)),
       ),
     );
 
-    // Function to navigate to the About Us screen
     void navigateToAbout() {
       Navigator.push(
         context,
@@ -71,14 +66,14 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    // Function to navigate to the Services screen
     void navigateToServices() {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const ServiceDetailScreen2(
-            serviceTitle: 'Our Services',
-            serviceDescription: 'Discover the range of services we offer.',
+          builder: (context) => const DiscoverDetailScreen(
+            itemTitle: 'Our Services',
+            itemSubtitle: 'Discover the range of services we offer.',
+            assetPath: 'assets/images/utility/oldcars.png',
           ),
         ),
       );
@@ -102,8 +97,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                   letterSpacing: 2,
                 ),
               ),
-
-              // On narrow screens, show icons for About Us and Menu
               if (constraints.maxWidth < 768)
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -116,12 +109,11 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     menuButton,
                   ],
                 )
-              // On wider screens, show the full navigation
               else
                 Row(
                   children: [
                     _buildNavButton('Products'),
-                    _buildNavButton('Services', onPressed: navigateToServices),
+                    _buildNavButton('Discover', onPressed: navigateToServices),
                     _buildNavButton('About', onPressed: navigateToAbout),
                     menuButton,
                   ],
@@ -137,7 +129,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             sigmaY: backgroundOpacity * 5.0,
           ),
           child: Container(
-            color: Colors.black.withOpacity(backgroundOpacity * 0.2),
+            color: Colors.black.withAlpha((backgroundOpacity * 51).round()),
           ),
         ),
       ),

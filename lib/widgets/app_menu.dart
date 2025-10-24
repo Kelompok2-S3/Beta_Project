@@ -2,6 +2,7 @@ import 'package:beta_project/data/car_database.dart';
 import 'package:beta_project/models/car_model.dart';
 import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
+import 'package:beta_project/screens/discover_detail_screen.dart'; // Import DiscoverDetailScreen
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -29,8 +30,8 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   final Map<String, List<String>> _brandsByLetter = {};
   final Map<String, List<CarModel>> _modelsByBrand = {};
 
-  // Mengubah daftar menu utama menjadi 'Product' dan 'About'
-  final List<String> _mainMenuItems = ['Product', 'About'];
+  // Add 'Discover' to the main menu items
+  final List<String> _mainMenuItems = ['Product', 'Discover', 'About'];
 
   @override
   void initState() {
@@ -80,15 +81,30 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   }
 
   void _onMainMenuSelected(String menuKey) {
+    // Handle navigation for 'About' and 'Discover'
     if (menuKey == 'About') {
-      widget.toggleMenu(); // Close the menu
+      widget.toggleMenu();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const AboutUsScreen()),
       );
-      return; // Stop further execution
+      return;
+    } else if (menuKey == 'Discover') {
+      widget.toggleMenu();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DiscoverDetailScreen(
+            itemTitle: 'Discover Our Fleet',
+            itemSubtitle: 'Experience the pinnacle of automotive engineering.',
+            assetPath: 'assets/images/utility/911.jpg',
+          ),
+        ),
+      );
+      return;
     }
 
+    // Handle submenu for 'Product'
     setState(() {
       if (_selectedMenu == menuKey) {
         _selectedMenu = null;
@@ -184,7 +200,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   }
 
   Widget _buildSubMenu() {
-    // Menampilkan submenu hanya untuk 'Product'
     if (_selectedMenu != 'Product') {
       return const SizedBox.shrink();
     }

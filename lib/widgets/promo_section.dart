@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:beta_project/screens/service_detail_screen.dart'; // Import the new screen
+import 'package:beta_project/screens/experience_detail_screen.dart';
 
 class PromoSection extends StatelessWidget {
   final bool isActive;
-  final String assetPath;
+  final String assetPath; // Reverted back to assetPath
   final String title;
   final String description;
   final String buttonText;
@@ -12,7 +12,7 @@ class PromoSection extends StatelessWidget {
   const PromoSection({
     super.key,
     required this.isActive,
-    required this.assetPath,
+    required this.assetPath, // Reverted back to assetPath
     required this.title,
     required this.description,
     required this.buttonText,
@@ -23,7 +23,7 @@ class PromoSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(assetPath),
+          image: AssetImage(assetPath), // Use AssetImage
           fit: BoxFit.cover,
         ),
       ),
@@ -59,9 +59,10 @@ class PromoSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ServiceDetailScreen(
-                        serviceTitle: title,
-                        serviceDescription: description,
+                      builder: (context) => ExperienceDetailScreen(
+                        experienceTitle: title,
+                        experienceDescription: description,
+                        assetPath: assetPath, // Pass the assetPath
                       ),
                     ),
                   );
