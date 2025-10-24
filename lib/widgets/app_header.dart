@@ -1,4 +1,6 @@
+
 import 'dart:ui';
+import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -14,15 +16,18 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     required this.isMenuOpen,
   });
 
-  Widget _buildNavButton(String text) {
+  // Updated to accept an optional onPressed callback
+  Widget _buildNavButton(String text, {VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TextButton(
-        onPressed: () {},
+        onPressed: onPressed ?? () {},
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
+        ),
         child: Text(
           text,
           style: const TextStyle(
-            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),
@@ -35,7 +40,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final double backgroundOpacity = (pageOffset).clamp(0.0, 1.0);
 
-    // The animated menu button
     final menuButton = IconButton(
       onPressed: toggleMenu,
       icon: AnimatedSwitcher(
@@ -48,7 +52,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Icon(
           isMenuOpen ? Icons.close : Icons.menu,
-          key: ValueKey<bool>(isMenuOpen), // Important for AnimatedSwitcher
+          key: ValueKey<bool>(isMenuOpen),
           color: Colors.white,
           size: 28,
         ),
@@ -57,6 +61,14 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
       ),
     );
+
+    // Function to navigate to the About Us screen
+    void navigateToAbout() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AboutUsScreen()),
+      );
+    }
 
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -77,16 +89,26 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
 
-              // On narrow screens, show only the menu icon
+              // On narrow screens, show icons for About Us and Menu
               if (constraints.maxWidth < 768)
-                menuButton
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: navigateToAbout,
+                      icon: const Icon(Icons.info_outline, color: Colors.white),
+                      tooltip: 'About Us',
+                    ),
+                    menuButton,
+                  ],
+                )
               // On wider screens, show the full navigation
               else
                 Row(
                   children: [
                     _buildNavButton('Products'),
                     _buildNavButton('Services'),
-                    _buildNavButton('About'),
+                    _buildNavButton('About', onPressed: navigateToAbout),
                     menuButton,
                   ],
                 ),
