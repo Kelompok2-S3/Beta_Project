@@ -55,7 +55,7 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
                 ShimmerEffect(delay: 1500.ms, duration: 1000.ms, color: Colors.white.withOpacity(0.5)), // Efek shimmer
               ],
               child: Text(
-                'BRANDS',
+                'BRAND',
                 style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 30,
