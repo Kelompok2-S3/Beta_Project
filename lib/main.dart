@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'screens/video_splash_screen.dart'; // Import splash screen
+import 'screens/splash_screen.dart'; // Import splash screen
 
 void main() {
   runApp(const MyApp());

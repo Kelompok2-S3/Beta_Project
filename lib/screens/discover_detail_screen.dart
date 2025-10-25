@@ -52,7 +52,7 @@ class DiscoverDetailScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 40),
                 _FuturisticContentBlock(
-                  imagePath: 'assets/images/utility/apollo.png', // Placeholder
+                  imagePath: 'assets/images/utility/lemans.png', // Placeholder
                   title: 'INNOVATION IN MOTION',
                   content:
                       'Our fleet represents the pinnacle of automotive innovation. Each vehicle is engineered with cutting-edge technology, delivering a dynamic and responsive driving experience that connects you to the road like never before.',
@@ -68,7 +68,7 @@ class DiscoverDetailScreen extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 _FuturisticContentBlock(
-                  imagePath: 'assets/images/utility/f1 old.png', // Placeholder
+                  imagePath: 'assets/images/utility/mansory.png', // Placeholder
                   title: 'DESIGN THAT INSPIRES',
                   content:
                       'Beyond performance, our vehicles are a statement of style. The aerodynamic lines, luxurious interiors, and bold presence are designed to inspire awe and admiration, making every journey an event.',
