@@ -97,7 +97,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
           builder: (context) => const DiscoverDetailScreen(
             itemTitle: 'Discover Our Fleet',
             itemSubtitle: 'Experience the pinnacle of automotive engineering.',
-            assetPath: 'assets/images/utility/911.jpg',
+            assetPath: 'assets/images/utility/oldcars.png',
           ),
         ),
       );

@@ -71,7 +71,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         context,
         MaterialPageRoute(
           builder: (context) => const DiscoverDetailScreen(
-            itemTitle: 'Our Services',
+            itemTitle: 'Discover Our Fleet',
             itemSubtitle: 'Discover the range of services we offer.',
             assetPath: 'assets/images/utility/oldcars.png',
           ),
