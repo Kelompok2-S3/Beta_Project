@@ -16,24 +16,41 @@ class CinematicHeroSection extends StatefulWidget {
   State<CinematicHeroSection> createState() => _CinematicHeroSectionState();
 }
 
-class _CinematicHeroSectionState extends State<CinematicHeroSection> {
+class _CinematicHeroSectionState extends State<CinematicHeroSection> with WidgetsBindingObserver {
   late VideoPlayerController _controller;
-  bool _isMuted = true; // Video dimulai dalam keadaan senyap
+  bool _isMuted = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _controller = VideoPlayerController.asset(widget.videoPath)
       ..initialize().then((_) {
-        setState(() {});
-        _controller.play();
-        _controller.setLooping(true);
-        _controller.setVolume(_isMuted ? 0 : 1.0);
+        if (mounted) {
+          setState(() {});
+          _controller.play();
+          _controller.setLooping(true);
+          _controller.setVolume(_isMuted ? 0 : 1.0);
+        }
       });
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (!mounted) return;
+
+    // Berhenti saat aplikasi tidak aktif/di background, mulai lagi saat kembali
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _controller.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      _controller.play();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
   }
@@ -47,6 +64,19 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> {
 
   @override
   Widget build(BuildContext context) {
+    // Cek visibilitas untuk play/pause
+    // Jika widget tidak lagi terlihat di layar (misal karena navigasi), kita pause videonya.
+    final bool isVisible = ModalRoute.of(context)?.isCurrent ?? false;
+    if (isVisible) {
+      if (!_controller.value.isPlaying) {
+        _controller.play();
+      }
+    } else {
+      if (_controller.value.isPlaying) {
+        _controller.pause();
+      }
+    }
+
     final double contentOpacity = (1.0 - widget.pageOffset).clamp(0.0, 1.0);
     final double parallaxOffset = widget.pageOffset * -200;
 
