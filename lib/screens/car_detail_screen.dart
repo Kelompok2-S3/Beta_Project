@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui'; // For ImageFilter
 import 'package:intl/intl.dart';
 
-//==============================================================================
-// BAGIAN 2: UI SCREEN (HALAMAN DETAIL MOBIL)
-//==============================================================================
+// UI SCREEN (HALAMAN DETAIL MOBIL)
 
 const Color _primaryAccentColor = Color(0xFFD5001C);
 const Color _darkBackground = Color(0xFF121212);
