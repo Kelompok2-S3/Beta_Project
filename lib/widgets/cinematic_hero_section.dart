@@ -18,7 +18,7 @@ class CinematicHeroSection extends StatefulWidget {
 
 class _CinematicHeroSectionState extends State<CinematicHeroSection> with WidgetsBindingObserver {
   late VideoPlayerController _controller;
-  bool _isMuted = true;
+  bool _isMuted = true; // Kembali menggunakan state lokal
 
   @override
   void initState() {
@@ -40,7 +40,6 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
     super.didChangeAppLifecycleState(state);
     if (!mounted) return;
 
-    // Berhenti saat aplikasi tidak aktif/di background, mulai lagi saat kembali
     if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
       _controller.pause();
     } else if (state == AppLifecycleState.resumed) {
@@ -64,15 +63,13 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
 
   @override
   Widget build(BuildContext context) {
-    // Cek visibilitas untuk play/pause
-    // Jika widget tidak lagi terlihat di layar (misal karena navigasi), kita pause videonya.
     final bool isVisible = ModalRoute.of(context)?.isCurrent ?? false;
     if (isVisible) {
-      if (!_controller.value.isPlaying) {
+      if (_controller.value.isInitialized && !_controller.value.isPlaying) {
         _controller.play();
       }
     } else {
-      if (_controller.value.isPlaying) {
+      if (_controller.value.isInitialized && _controller.value.isPlaying) {
         _controller.pause();
       }
     }
@@ -86,7 +83,6 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
       child: ClipRect(
         child: Stack(
           children: [
-            // --- Background Video ---
             Positioned.fill(
               child: Transform.translate(
                 offset: Offset(0, parallaxOffset),
@@ -104,8 +100,6 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
                     : const Center(child: CircularProgressIndicator()),
               ),
             ),
-
-            // --- Fading Content ---
             Align(
               alignment: Alignment.bottomCenter,
               child: Opacity(
@@ -120,27 +114,19 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
                           'Experience Performance',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.displayLarge,
-                        )
-                        .animate()
-                        .fade(duration: 1200.ms, delay: 300.ms)
-                        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
+                        ).animate().fade(duration: 1200.ms, delay: 300.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
                         const SizedBox(height: 10),
                         Text(
                           'Discover the new generation of premium vehicles.',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyLarge,
-                        )
-                        .animate()
-                        .fade(duration: 1200.ms, delay: 500.ms)
-                        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
+                        ).animate().fade(duration: 1200.ms, delay: 500.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
                         const SizedBox(height: 60),
                         Container(
                           height: 50,
                           width: 2,
                           color: Colors.white,
-                        )
-                        .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                        .slideY(duration: 1800.ms, begin: 0, end: 0.4, curve: Curves.easeInOut),
+                        ).animate(onPlay: (controller) => controller.repeat(reverse: true)).slideY(duration: 1800.ms, begin: 0, end: 0.4, curve: Curves.easeInOut),
                         const SizedBox(height: 40),
                       ],
                     ),
@@ -148,8 +134,6 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
                 ),
               ),
             ),
-
-            // --- Tombol Suara ---
             Positioned(
               bottom: 30,
               right: 30,
@@ -159,7 +143,7 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
                   color: Colors.white,
                   size: 30,
                 ),
-                onPressed: _toggleSound,
+                onPressed: _toggleSound, // Kembali menggunakan _toggleSound
               ),
             ),
           ],

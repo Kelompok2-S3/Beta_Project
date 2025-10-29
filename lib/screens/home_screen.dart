@@ -1,4 +1,5 @@
 import 'package:beta_project/cubits/menu_cubit.dart';
+import 'package:beta_project/cubits/scroll_cubit.dart';
 import 'package:beta_project/widgets/app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,12 +19,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late ScrollController _scrollController;
-  double _scrollOffset = 0.0;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    // Add listener to update ScrollCubit
     _scrollController.addListener(_onScroll);
   }
 
@@ -37,50 +38,59 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onScroll() {
     if (!mounted) return;
     final screenHeight = MediaQuery.of(context).size.height;
-    setState(() {
-      _scrollOffset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
-    });
+    final offset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
+    // Update cubit instead of calling setState
+    context.read<ScrollCubit>().updateScroll(offset);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => MenuCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => MenuCubit()),
+        BlocProvider(create: (_) => ScrollCubit()),
+      ],
       child: BlocBuilder<MenuCubit, bool>(
         builder: (context, isMenuOpen) {
-          final List<Widget> sections = [
-            CinematicHeroSection(
-              pageOffset: _scrollOffset,
-              videoPath: 'assets/videos/Forza4.mp4',
-            ),
-            const ModelsSection(isActive: true),
-            const PromoSection(
-              isActive: true,
-              assetPath: 'assets/images/utility/911.jpg',
-              title: 'Our Experience', // Changed from 'Our Services'
-              description: 'Quality and excellence for your vehicle.',
-              buttonText: 'Learn More',
-            ),
-            const FeaturedSection(isActive: true),
-            const AppFooter(isActive: true),
-          ];
-
           return Scaffold(
             backgroundColor: Colors.black,
             body: Stack(
               children: [
                 ListView(
                   controller: _scrollController,
-                  children: sections,
+                  children: [
+                    BlocBuilder<ScrollCubit, double>(
+                      builder: (context, scrollOffset) {
+                        return CinematicHeroSection(
+                          pageOffset: scrollOffset,
+                          videoPath: 'assets/videos/Forza4.mp4',
+                        );
+                      },
+                    ),
+                    const ModelsSection(isActive: true),
+                    const PromoSection(
+                      isActive: true,
+                      assetPath: 'assets/images/utility/911.jpg',
+                      title: 'Our Experience',
+                      description: 'Quality and excellence for your vehicle.',
+                      buttonText: 'Learn More',
+                    ),
+                    const FeaturedSection(isActive: true),
+                    const AppFooter(isActive: true),
+                  ],
                 ),
                 Positioned(
                   top: 0,
                   left: 0,
                   right: 0,
-                  child: AppHeader(
-                    pageOffset: _scrollOffset,
-                    toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
-                    isMenuOpen: isMenuOpen,
+                  child: BlocBuilder<ScrollCubit, double>(
+                    builder: (context, scrollOffset) {
+                      return AppHeader(
+                        pageOffset: scrollOffset,
+                        toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                        isMenuOpen: isMenuOpen,
+                      );
+                    },
                   ),
                 ),
                 AnimatedOpacity(

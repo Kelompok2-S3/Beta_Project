@@ -1,10 +1,13 @@
+import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
+import 'package:beta_project/cubits/app_menu/app_menu_state.dart';
 import 'package:beta_project/data/car_database.dart';
 import 'package:beta_project/models/car_model.dart';
 import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
-import 'package:beta_project/screens/discover_detail_screen.dart'; // Import DiscoverDetailScreen
+import 'package:beta_project/screens/discover_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppMenu extends StatefulWidget {
   final bool isMenuOpen;
@@ -23,29 +26,26 @@ class AppMenu extends StatefulWidget {
 class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   late AnimationController _mainController;
   late AnimationController _subController;
-
-  String? _selectedMenu;
-  String? _selectedBrand;
+  late final AppMenuCubit _cubit;
 
   final Map<String, List<String>> _brandsByLetter = {};
   final Map<String, List<CarModel>> _modelsByBrand = {};
-
-  // Add 'Discover' to the main menu items
   final List<String> _mainMenuItems = ['Product', 'Discover', 'About'];
 
   @override
   void initState() {
     super.initState();
+    _cubit = AppMenuCubit();
     _mainController = AnimationController(vsync: this, duration: 600.ms);
     _subController = AnimationController(vsync: this, duration: 400.ms);
 
+    // Data preparation logic remains the same
     for (var car in allCars) {
       if (!_modelsByBrand.containsKey(car.brand)) {
         _modelsByBrand[car.brand] = [];
       }
       _modelsByBrand[car.brand]!.add(car);
     }
-
     List<String> brands = _modelsByBrand.keys.toList();
     brands.sort();
     for (var brand in brands) {
@@ -66,10 +66,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       _mainController.forward();
     } else {
       _mainController.reverse();
-      setState(() {
-        _selectedMenu = null;
-        _selectedBrand = null;
-      });
+      _cubit.reset(); // Reset cubit state when menu closes
     }
   }
 
@@ -77,17 +74,14 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   void dispose() {
     _mainController.dispose();
     _subController.dispose();
+    _cubit.close();
     super.dispose();
   }
 
   void _onMainMenuSelected(String menuKey) {
-    // Handle navigation for 'About' and 'Discover'
     if (menuKey == 'About') {
       widget.toggleMenu();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const AboutUsScreen()),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutUsScreen()));
       return;
     } else if (menuKey == 'Discover') {
       widget.toggleMenu();
@@ -103,78 +97,65 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       );
       return;
     }
-
-    // Handle submenu for 'Product'
-    setState(() {
-      if (_selectedMenu == menuKey) {
-        _selectedMenu = null;
-        _selectedBrand = null;
-        _subController.reverse();
-      } else {
-        _selectedMenu = menuKey;
-        _selectedBrand = null;
-        _subController.forward(from: 0.0);
-      }
-    });
-  }
-
-  void _onBrandSelected(String brandKey) {
-    setState(() {
-      _selectedBrand = brandKey;
-      _subController.forward(from: 0.0);
-    });
-  }
-
-  void _onBackToBrands() {
-    setState(() {
-      _selectedBrand = null;
-      _subController.reverse().then((_) => _subController.forward());
-    });
+    _cubit.selectMenu(menuKey);
   }
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: !widget.isMenuOpen,
-      child: Animate(
-        target: widget.isMenuOpen ? 1.0 : 0.0,
-        effects: [FadeEffect(duration: 600.ms, curve: Curves.easeInOut)],
-        child: Container(
-          color: Colors.black.withAlpha(230),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 20,
-                right: 20,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 32),
-                  onPressed: widget.toggleMenu,
-                ).animate(controller: _mainController).fade(duration: 400.ms, delay: 200.ms),
-              ),
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 80.0, left: 60, right: 60),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _mainMenuItems.map((key) => _buildMainMenuItem(key)).toList(),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 40),
-                          child: _buildSubMenu(),
-                        ),
-                      ),
-                    ],
+    return BlocProvider.value(
+      value: _cubit,
+      child: BlocListener<AppMenuCubit, AppMenuState>(
+        listener: (context, state) {
+          // Animate sub-menu based on state changes
+          if (state.selectedMenu == 'Product' || state.selectedBrand != null) {
+            _subController.forward(from: 0.0);
+          } else {
+            _subController.reverse();
+          }
+        },
+        child: IgnorePointer(
+          ignoring: !widget.isMenuOpen,
+          child: Animate(
+            target: widget.isMenuOpen ? 1.0 : 0.0,
+            effects: [FadeEffect(duration: 600.ms, curve: Curves.easeInOut)],
+            child: Container(
+              color: Colors.black.withAlpha(230),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 20,
+                    right: 20,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                      onPressed: widget.toggleMenu,
+                    ).animate(controller: _mainController).fade(duration: 400.ms, delay: 200.ms),
                   ),
-                ),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 80.0, left: 60, right: 60),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: _mainMenuItems.map((key) => _buildMainMenuItem(key)).toList(),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 40),
+                              child: _buildSubMenu(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -182,60 +163,66 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   }
 
   Widget _buildMainMenuItem(String text) {
-    final bool isSelected = _selectedMenu == text;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
-      child: GestureDetector(
-        onTap: () => _onMainMenuSelected(text),
-        child: Text(
-          text,
-          style: textTheme.headlineSmall?.copyWith(
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.white : Colors.white70,
+    return BlocBuilder<AppMenuCubit, AppMenuState>(
+      builder: (context, state) {
+        final bool isSelected = state.selectedMenu == text;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          child: GestureDetector(
+            onTap: () => _onMainMenuSelected(text),
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    color: isSelected ? Colors.white : Colors.white70,
+                  ),
+            ),
           ),
-        ),
-      ),
-    ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+        ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+      },
+    );
   }
 
   Widget _buildSubMenu() {
-    if (_selectedMenu != 'Product') {
-      return const SizedBox.shrink();
-    }
+    return BlocBuilder<AppMenuCubit, AppMenuState>(
+      builder: (context, state) {
+        if (state.selectedMenu != 'Product') {
+          return const SizedBox.shrink();
+        }
 
-    if (_selectedBrand != null) {
-      final models = _modelsByBrand[_selectedBrand] ?? [];
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildBackButton('Back to Brands'),
-          Expanded(
-            child: ListView.builder(
-              itemCount: models.length,
-              itemBuilder: (context, index) => _buildModelMenuItem(models[index]),
-            ),
-          ),
-        ],
-      );
-    }
+        if (state.selectedBrand != null) {
+          final models = _modelsByBrand[state.selectedBrand] ?? [];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildBackButton('Back to Brands'),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: models.length,
+                  itemBuilder: (context, index) => _buildModelMenuItem(models[index]),
+                ),
+              ),
+            ],
+          );
+        }
 
-    final letters = _brandsByLetter.keys.toList();
-    return ListView.builder(
-      itemCount: letters.length,
-      itemBuilder: (context, index) {
-        final letter = letters[index];
-        final brands = _brandsByLetter[letter]!;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-              child: Text(letter, style: Theme.of(context).textTheme.titleLarge),
-            ),
-            ...brands.map((brand) => _buildBrandMenuItem(brand)).toList(),
-          ],
+        final letters = _brandsByLetter.keys.toList();
+        return ListView.builder(
+          itemCount: letters.length,
+          itemBuilder: (context, index) {
+            final letter = letters[index];
+            final brands = _brandsByLetter[letter]!;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                  child: Text(letter, style: Theme.of(context).textTheme.titleLarge),
+                ),
+                ...brands.map((brand) => _buildBrandMenuItem(brand)).toList(),
+              ],
+            );
+          },
         );
       },
     );
@@ -243,7 +230,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   Widget _buildBrandMenuItem(String brand) {
     return GestureDetector(
-      onTap: () => _onBrandSelected(brand),
+      onTap: () => context.read<AppMenuCubit>().selectBrand(brand),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(brand, style: Theme.of(context).textTheme.titleMedium),
@@ -268,7 +255,10 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   Widget _buildBackButton(String text) {
     return GestureDetector(
-      onTap: _onBackToBrands,
+      onTap: () {
+        context.read<AppMenuCubit>().backToBrands();
+        _subController.reverse().then((_) => _subController.forward());
+      },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
         child: Row(
