@@ -1,7 +1,7 @@
 
 import 'dart:ui';
+import 'package:beta_project/config/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class AboutUsScreen extends StatelessWidget {
@@ -23,7 +23,7 @@ class AboutUsScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 'Our Story',
-                style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+                style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
               background: Container(
@@ -32,7 +32,7 @@ class AboutUsScreen extends StatelessWidget {
                     image: const AssetImage('assets/images/utility/racer.png'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.6),
+                      Colors.black.withAlpha(153), // 60% opacity
                       BlendMode.darken,
                     ),
                   ),
@@ -75,7 +75,7 @@ class AboutUsScreen extends StatelessWidget {
 
                 const SizedBox(height: 50),
               ],
-            ), 
+            ),
           ),
         ],
       ),
@@ -100,37 +100,29 @@ class _FuturisticContentBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isImageLeft = imageAlignment == Alignment.centerLeft;
-    const double imageOverlap = 50.0; // How much the image goes off-screen
+    const double imageOverlap = 50.0;
     final double screenWidth = MediaQuery.of(context).size.width;
-    const double imageWidthRatio = 0.65; // Image takes 65% of screen width
-    const double textSidePadding = 24.0; // Padding from the screen edge for the text block
-    const double textImageGap = 20.0; // Minimum gap between the image and text
+    const double imageWidthRatio = 0.65;
+    const double textSidePadding = 24.0;
+    const double textImageGap = 20.0;
 
-    // Calculate the left and right positions for the text block
     double textLeftPosition;
     double textRightPosition;
 
     if (isImageLeft) {
-      // Image is on the left. Text is on the right.
-      // Text starts after the visible part of the image + gap
       textLeftPosition = (screenWidth * imageWidthRatio) - imageOverlap + textImageGap;
-      // Text ends at the screen edge minus padding
       textRightPosition = textSidePadding;
     } else {
-      // Image is on the right. Text is on the left.
-      // Text starts at the screen edge plus padding
       textLeftPosition = textSidePadding;
-      // Text ends before the visible part of the image + gap
       textRightPosition = (screenWidth * imageWidthRatio) - imageOverlap + textImageGap;
     }
 
     return SizedBox(
-      height: 320, // Fixed height for the Stack to provide a stable canvas
+      height: 320,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          // --- Clipped Image ---
           Positioned(
             top: 20,
             left: isImageLeft ? -imageOverlap : null,
@@ -145,8 +137,6 @@ class _FuturisticContentBlock extends StatelessWidget {
               ),
             ),
           ),
-
-          // --- Text Content ---
           Positioned(
             top: 40,
             bottom: 40,
@@ -159,11 +149,8 @@ class _FuturisticContentBlock extends StatelessWidget {
                 Text(
                   title,
                   textAlign: isImageLeft ? TextAlign.left : TextAlign.right,
-                  style: GoogleFonts.orbitron(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.white,
-                    shadows: [Shadow(color: accentColor.withOpacity(0.7), blurRadius: 10)],
+                  style: AppTheme.orbitronTitle2.copyWith(
+                    shadows: [Shadow(color: accentColor.withAlpha(179), blurRadius: 10)], // 70% opacity
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -178,7 +165,7 @@ class _FuturisticContentBlock extends StatelessWidget {
                     child: Text(
                       content,
                       textAlign: isImageLeft ? TextAlign.left : TextAlign.right,
-                      style: TextStyle(fontSize: 15, color: Colors.grey[300], height: 1.6),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ),
@@ -232,12 +219,8 @@ class _CoreValuesSection extends StatelessWidget {
         children: [
           Text(
             'CORE VALUES',
-            style: GoogleFonts.orbitron(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: Colors.white,
-              letterSpacing: 2,
-              shadows: [Shadow(color: accentColor.withOpacity(0.7), blurRadius: 15)],
+            style: AppTheme.orbitronTitle1.copyWith(
+              shadows: [Shadow(color: accentColor.withAlpha(179), blurRadius: 15)], // 70% opacity
             ),
           ),
           const SizedBox(height: 30),
@@ -245,16 +228,19 @@ class _CoreValuesSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildValuePillar(
+                context: context,
                 icon: Icons.timeline,
                 title: 'Heritage',
                 accentColor: accentColor,
               ),
               _buildValuePillar(
+                context: context,
                 icon: Icons.speed,
                 title: 'Performance',
                 accentColor: accentColor,
               ),
               _buildValuePillar(
+                context: context,
                 icon: Icons.people_alt,
                 title: 'Community',
                 accentColor: accentColor,
@@ -266,7 +252,7 @@ class _CoreValuesSection extends StatelessWidget {
     );
   }
 
-  Widget _buildValuePillar({required IconData icon, required String title, required Color accentColor}) {
+  Widget _buildValuePillar({required BuildContext context, required IconData icon, required String title, required Color accentColor}) {
     return Column(
       children: [
         Container(
@@ -274,10 +260,10 @@ class _CoreValuesSection extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.black,
-            border: Border.all(color: accentColor.withOpacity(0.5), width: 1),
+            border: Border.all(color: accentColor.withAlpha(128), width: 1), // 50% opacity
             boxShadow: [
-              BoxShadow(color: accentColor.withOpacity(0.5), blurRadius: 15, spreadRadius: 2),
-              BoxShadow(color: Colors.black.withOpacity(0.7), blurRadius: 20, spreadRadius: 10),
+              BoxShadow(color: accentColor.withAlpha(128), blurRadius: 15, spreadRadius: 2), // 50% opacity
+              BoxShadow(color: Colors.black.withAlpha(179), blurRadius: 20, spreadRadius: 10), // 70% opacity
             ],
           ),
           child: Icon(icon, color: accentColor, size: 36),
@@ -285,12 +271,7 @@ class _CoreValuesSection extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           title.toUpperCase(),
-          style: GoogleFonts.montserrat(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: Colors.white,
-            letterSpacing: 1.2,
-          ),
+          style: Theme.of(context).textTheme.titleSmall,
         ),
       ],
     );

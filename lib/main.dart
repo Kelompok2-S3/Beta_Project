@@ -1,5 +1,5 @@
+import 'package:beta_project/config/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -11,15 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData darkTheme = ThemeData.dark();
-
     return MaterialApp(
       title: 'Brand Showcase',
       debugShowCheckedModeBanner: false,
-      theme: darkTheme.copyWith(
-        textTheme: GoogleFonts.montserratTextTheme(darkTheme.textTheme),
-        scaffoldBackgroundColor: Colors.black,
-      ),
+      theme: AppTheme.darkTheme,
       home: const VideoSplashScreen(), // Set splash screen sebagai home
     );
   }

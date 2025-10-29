@@ -1,5 +1,7 @@
+import 'package:beta_project/cubits/menu_cubit.dart';
 import 'package:beta_project/widgets/app_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/app_header.dart';
 import '../widgets/cinematic_hero_section.dart';
 import '../widgets/models_section.dart';
@@ -17,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late ScrollController _scrollController;
   double _scrollOffset = 0.0;
-  bool _isMenuOpen = false;
 
   @override
   void initState() {
@@ -41,61 +42,62 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _toggleMenu() {
-    setState(() {
-      _isMenuOpen = !_isMenuOpen;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final List<Widget> sections = [
-      CinematicHeroSection(
-        pageOffset: _scrollOffset,
-        videoPath: 'assets/videos/Forza4.mp4',
-      ),
-      const ModelsSection(isActive: true),
-      const PromoSection(
-        isActive: true,
-        assetPath: 'assets/images/utility/911.jpg',
-        title: 'Our Experience', // Changed from 'Our Services'
-        description: 'Quality and excellence for your vehicle.',
-        buttonText: 'Learn More',
-      ),
-      const FeaturedSection(isActive: true),
-      const AppFooter(isActive: true),
-    ];
-
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          ListView(
-            controller: _scrollController,
-            children: sections,
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppHeader(
+    return BlocProvider(
+      create: (_) => MenuCubit(),
+      child: BlocBuilder<MenuCubit, bool>(
+        builder: (context, isMenuOpen) {
+          final List<Widget> sections = [
+            CinematicHeroSection(
               pageOffset: _scrollOffset,
-              toggleMenu: _toggleMenu,
-              isMenuOpen: _isMenuOpen,
+              videoPath: 'assets/videos/Forza4.mp4',
             ),
-          ),
-          AnimatedOpacity(
-            opacity: _isMenuOpen ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 600),
-            child: IgnorePointer(
-              ignoring: !_isMenuOpen,
-              child: AppMenu(
-                isMenuOpen: _isMenuOpen,
-                toggleMenu: _toggleMenu,
-              ),
+            const ModelsSection(isActive: true),
+            const PromoSection(
+              isActive: true,
+              assetPath: 'assets/images/utility/911.jpg',
+              title: 'Our Experience', // Changed from 'Our Services'
+              description: 'Quality and excellence for your vehicle.',
+              buttonText: 'Learn More',
             ),
-          ),
-        ],
+            const FeaturedSection(isActive: true),
+            const AppFooter(isActive: true),
+          ];
+
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: Stack(
+              children: [
+                ListView(
+                  controller: _scrollController,
+                  children: sections,
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: AppHeader(
+                    pageOffset: _scrollOffset,
+                    toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                    isMenuOpen: isMenuOpen,
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: isMenuOpen ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 600),
+                  child: IgnorePointer(
+                    ignoring: !isMenuOpen,
+                    child: AppMenu(
+                      isMenuOpen: isMenuOpen,
+                      toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -183,16 +183,17 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   Widget _buildMainMenuItem(String text) {
     final bool isSelected = _selectedMenu == text;
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: GestureDetector(
         onTap: () => _onMainMenuSelected(text),
         child: Text(
           text,
-          style: TextStyle(
-            fontSize: 24,
+          style: textTheme.headlineSmall?.copyWith(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.white : Colors.white.withAlpha(180),
+            color: isSelected ? Colors.white : Colors.white70,
           ),
         ),
       ),
@@ -231,7 +232,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-              child: Text(letter, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+              child: Text(letter, style: Theme.of(context).textTheme.titleLarge),
             ),
             ...brands.map((brand) => _buildBrandMenuItem(brand)).toList(),
           ],
@@ -245,7 +246,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       onTap: () => _onBrandSelected(brand),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Text(brand, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white70)),
+        child: Text(brand, style: Theme.of(context).textTheme.titleMedium),
       ),
     ).animate(controller: _subController).slideX(begin: -0.2, end: 0, duration: 400.ms, curve: Curves.easeOutCubic).fadeIn();
   }
@@ -260,7 +261,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Text(model.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white70)),
+        child: Text(model.name, style: Theme.of(context).textTheme.titleMedium),
       ),
     ).animate(controller: _subController).slideX(begin: -0.2, end: 0, duration: 400.ms, curve: Curves.easeOutCubic).fadeIn();
   }
@@ -274,7 +275,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
           children: [
             const Icon(Icons.arrow_back_ios, color: Colors.white70, size: 16),
             const SizedBox(width: 8),
-            Text(text, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white70)),
+            Text(text, style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
       ),

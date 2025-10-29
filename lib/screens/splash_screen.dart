@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'home_screen.dart';
 
 class VideoSplashScreen extends StatefulWidget {
@@ -56,12 +55,7 @@ class _VideoSplashScreenState extends State<VideoSplashScreen> {
               ],
               child: Text(
                 'BRAND',
-                style: GoogleFonts.montserrat(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 5,
-                ),
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
           ],

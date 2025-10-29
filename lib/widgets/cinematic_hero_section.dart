@@ -116,19 +116,19 @@ class _CinematicHeroSectionState extends State<CinematicHeroSection> with Widget
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Text(
+                        Text(
                           'Experience Performance',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold, shadows: [Shadow(blurRadius: 10.0, color: Colors.black54)])
+                          style: Theme.of(context).textTheme.displayLarge,
                         )
                         .animate()
                         .fade(duration: 1200.ms, delay: 300.ms)
                         .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
                         const SizedBox(height: 10),
-                        const Text(
+                        Text(
                           'Discover the new generation of premium vehicles.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 18, shadows: [Shadow(blurRadius: 8.0, color: Colors.black54)])
+                          style: Theme.of(context).textTheme.bodyLarge,
                         )
                         .animate()
                         .fade(duration: 1200.ms, delay: 500.ms)
