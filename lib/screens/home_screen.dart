@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    // Add listener to update ScrollCubit
     _scrollController.addListener(_onScroll);
   }
 
@@ -39,75 +38,83 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     final screenHeight = MediaQuery.of(context).size.height;
     final offset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
-    // Update cubit instead of calling setState
     context.read<ScrollCubit>().updateScroll(offset);
   }
 
   @override
   Widget build(BuildContext context) {
+    // We provide the Cubits here, but don't build the whole screen based on them.
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => MenuCubit()),
         BlocProvider(create: (_) => ScrollCubit()),
       ],
-      child: BlocBuilder<MenuCubit, bool>(
-        builder: (context, isMenuOpen) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            body: Stack(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            // This ListView is now built only once.
+            ListView(
+              controller: _scrollController,
               children: [
-                ListView(
-                  controller: _scrollController,
-                  children: [
-                    BlocBuilder<ScrollCubit, double>(
-                      builder: (context, scrollOffset) {
-                        return CinematicHeroSection(
-                          pageOffset: scrollOffset,
-                          videoPath: 'assets/videos/Forza4.mp4',
-                        );
-                      },
-                    ),
-                    const ModelsSection(isActive: true),
-                    const PromoSection(
-                      isActive: true,
-                      assetPath: 'assets/images/utility/911.jpg',
-                      title: 'Our Experience',
-                      description: 'Quality and excellence for your vehicle.',
-                      buttonText: 'Learn More',
-                    ),
-                    const FeaturedSection(isActive: true),
-                    const AppFooter(isActive: true),
-                  ],
+                // This builder only rebuilds CinematicHeroSection on scroll.
+                BlocBuilder<ScrollCubit, double>(
+                  builder: (context, scrollOffset) {
+                    return CinematicHeroSection(
+                      pageOffset: scrollOffset,
+                      videoPath: 'assets/videos/Forza4.mp4',
+                    );
+                  },
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: BlocBuilder<ScrollCubit, double>(
-                    builder: (context, scrollOffset) {
-                      return AppHeader(
-                        pageOffset: scrollOffset,
-                        toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
-                        isMenuOpen: isMenuOpen,
-                      );
-                    },
-                  ),
+                // These sections are now constant and will never rebuild.
+                const ModelsSection(isActive: true),
+                const PromoSection(
+                  isActive: true,
+                  assetPath: 'assets/images/utility/911.jpg',
+                  title: 'Our Experience',
+                  description: 'Quality and excellence for your vehicle.',
+                  buttonText: 'Learn More',
                 ),
-                AnimatedOpacity(
-                  opacity: isMenuOpen ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 600),
-                  child: IgnorePointer(
-                    ignoring: !isMenuOpen,
-                    child: AppMenu(
-                      isMenuOpen: isMenuOpen,
-                      toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
-                    ),
-                  ),
-                ),
+                const FeaturedSection(isActive: true),
+                const AppFooter(isActive: true),
               ],
             ),
-          );
-        },
+            // This builder only rebuilds the Header and Menu when needed.
+            BlocBuilder<MenuCubit, bool>(
+              builder: (context, isMenuOpen) {
+                return Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: BlocBuilder<ScrollCubit, double>(
+                        builder: (context, scrollOffset) {
+                          return AppHeader(
+                            pageOffset: scrollOffset,
+                            toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                            isMenuOpen: isMenuOpen,
+                          );
+                        },
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      opacity: isMenuOpen ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 600),
+                      child: IgnorePointer(
+                        ignoring: !isMenuOpen,
+                        child: AppMenu(
+                          isMenuOpen: isMenuOpen,
+                          toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
