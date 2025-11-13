@@ -34,11 +34,9 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-  // AppMenuCubit is provided by the parent (HomeScreen). Use context.read<AppMenuCubit>() when needed.
     _mainController = AnimationController(vsync: this, duration: 600.ms);
     _subController = AnimationController(vsync: this, duration: 400.ms);
 
-    // Data preparation logic remains the same
     for (var car in allCars) {
       if (!_modelsByBrand.containsKey(car.brand)) {
         _modelsByBrand[car.brand] = [];
@@ -65,7 +63,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       _mainController.forward();
     } else {
       _mainController.reverse();
-      // Reset cubit state when menu closes
       try {
         context.read<AppMenuCubit>().reset();
       } catch (_) {}
@@ -98,63 +95,55 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       );
       return;
     }
-  context.read<AppMenuCubit>().selectMenu(menuKey);
+    context.read<AppMenuCubit>().selectMenu(menuKey);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AppMenuCubit, AppMenuState>(
       listener: (context, state) {
-        // Animate sub-menu based on state changes
         if (state.selectedMenu == 'Product' || state.selectedBrand != null) {
           _subController.forward(from: 0.0);
         } else {
           _subController.reverse();
         }
       },
-      child: IgnorePointer(
-        ignoring: !widget.isMenuOpen,
-        child: Animate(
-          target: widget.isMenuOpen ? 1.0 : 0.0,
-          effects: [FadeEffect(duration: 600.ms, curve: Curves.easeInOut)],
-          child: Container(
-            color: Colors.black.withAlpha(230),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 20,
-                  right: 20,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white, size: 32),
-                    onPressed: widget.toggleMenu,
-                  ).animate(controller: _mainController).fade(duration: 400.ms, delay: 200.ms),
-                ),
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 80.0, left: 60, right: 60),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _mainMenuItems.map((key) => _buildMainMenuItem(key)).toList(),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: _buildSubMenu(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+      child: Container(
+        color: Colors.black.withAlpha(230),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 20,
+              right: 20,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                onPressed: widget.toggleMenu,
+              ).animate(controller: _mainController).fade(duration: 400.ms, delay: 200.ms),
             ),
-          ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 80.0, left: 60, right: 60),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _mainMenuItems.map((key) => _buildMainMenuItem(key)).toList(),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: _buildSubMenu(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

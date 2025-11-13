@@ -1,6 +1,6 @@
 import 'package:beta_project/widgets/car_carousel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+// import 'package:flutter_animate/flutter_animate.dart'; // No longer needed here
 
 class ModelsSection extends StatelessWidget {
   final bool isActive;
@@ -15,8 +15,8 @@ class ModelsSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 60.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
+        children: const [ // Now a const Column
+          Text(
             'Featured Models',
             style: TextStyle(
               color: Colors.white,
@@ -24,11 +24,12 @@ class ModelsSection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 50),
+          SizedBox(height: 50),
           // The CarCarousel now holds the correct models and logic
-          const CarCarousel(),
+          CarCarousel(),
         ],
-      ).animate().fadeIn(duration: 600.ms, curve: Curves.easeOut),
+      ),
+      // .animate().fadeIn() has been removed as it was likely blocking taps.
     );
   }
 }

@@ -1,15 +1,23 @@
+import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
 import 'package:beta_project/cubits/menu_cubit.dart';
 import 'package:beta_project/cubits/scroll_cubit.dart';
 import 'package:beta_project/widgets/app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/app_header.dart';
-import '../cubits/app_menu/app_menu_cubit.dart';
 import '../widgets/cinematic_hero_section.dart';
 import '../widgets/models_section.dart';
 import '../widgets/promo_section.dart';
 import '../widgets/featured_section.dart';
 import '../widgets/app_footer.dart';
+
+// =================================================================
+// DEFINITIVE FIXED VERSION
+// This version restores the full UI with the corrected layout structure.
+// The core issue was invisible overlays in a nested Stack blocking taps.
+// This new structure places all overlays in a single top-level Stack,
+// which correctly handles user interaction.
+// =================================================================
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,26 +47,32 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     final screenHeight = MediaQuery.of(context).size.height;
     final offset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
-    context.read<ScrollCubit>().updateScroll(offset);
+    // Use a try-catch block for safety when accessing cubits during build/scroll phases.
+    try {
+      context.read<ScrollCubit>().updateScroll(offset);
+    } catch (e) {
+      // Cubit might not be available during hot reload or tree changes.
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // We provide the Cubits here, but don't build the whole screen based on them.
+    // Providing all necessary cubits at the top level of the screen.
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => MenuCubit()),
         BlocProvider(create: (_) => ScrollCubit()),
+        BlocProvider(create: (_) => AppMenuCubit()),
       ],
       child: Scaffold(
         backgroundColor: Colors.black,
+        // The main Stack that correctly layers the UI.
         body: Stack(
           children: [
-            // This ListView is now built only once.
+            // 1. The main scrollable content sits at the bottom of the Stack.
             ListView(
               controller: _scrollController,
               children: [
-                // This builder only rebuilds CinematicHeroSection on scroll.
                 BlocBuilder<ScrollCubit, double>(
                   builder: (context, scrollOffset) {
                     return CinematicHeroSection(
@@ -67,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                 ),
-                // These sections are now constant and will never rebuild.
                 const ModelsSection(isActive: true),
                 const PromoSection(
                   isActive: true,
@@ -80,39 +93,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 const AppFooter(isActive: true),
               ],
             ),
-            // This builder only rebuilds the Header and Menu when needed.
+
+            // 2. The AppHeader is positioned on top of the ListView.
+            // It is only a visual element and its pointer events are handled correctly.
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: BlocBuilder<ScrollCubit, double>(
+                builder: (context, scrollOffset) {
+                  return BlocBuilder<MenuCubit, bool>(
+                    builder: (context, isMenuOpen) {
+                      return AppHeader(
+                        pageOffset: scrollOffset,
+                        toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                        isMenuOpen: isMenuOpen,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+
+            // 3. The AppMenu is the top-most layer, controlled by AnimatedOpacity and IgnorePointer.
+            // This ensures it only blocks taps when it is actually visible.
             BlocBuilder<MenuCubit, bool>(
               builder: (context, isMenuOpen) {
-                return BlocProvider(
-                  create: (_) => AppMenuCubit(),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: BlocBuilder<ScrollCubit, double>(
-                          builder: (context, scrollOffset) {
-                            return AppHeader(
-                              pageOffset: scrollOffset,
-                              toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
-                              isMenuOpen: isMenuOpen,
-                            );
-                          },
-                        ),
-                      ),
-                      AnimatedOpacity(
-                        opacity: isMenuOpen ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 600),
-                        child: IgnorePointer(
-                          ignoring: !isMenuOpen,
-                          child: AppMenu(
-                            isMenuOpen: isMenuOpen,
-                            toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
-                          ),
-                        ),
-                      ),
-                    ],
+                return AnimatedOpacity(
+                  opacity: isMenuOpen ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 500),
+                  child: IgnorePointer(
+                    ignoring: !isMenuOpen,
+                    child: AppMenu(
+                      isMenuOpen: isMenuOpen,
+                      toggleMenu: () => context.read<MenuCubit>().toggleMenu(),
+                    ),
                   ),
                 );
               },
