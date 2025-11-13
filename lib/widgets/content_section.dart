@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:beta_project/screens/discover_detail_screen.dart';
 
 class ContentSection extends StatelessWidget {
   final String title;
@@ -81,7 +82,18 @@ class ContentSection extends StatelessWidget {
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DiscoverDetailScreen(
+                            itemTitle: title,
+                            itemSubtitle: description,
+                            assetPath: assetPath,
+                          ),
+                        ),
+                      );
+                    },
                     splashColor: Colors.white12,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
