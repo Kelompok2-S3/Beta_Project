@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:beta_project/screens/home_screen.dart';
 import 'package:beta_project/screens/splash_screen.dart';
-import 'package:beta_project/models/car_model.dart';
 
 final goRouter = GoRouter(
   // Explicitly set the initial location to a unique path for the splash screen.

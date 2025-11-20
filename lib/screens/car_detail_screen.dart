@@ -1,10 +1,7 @@
 import 'package:beta_project/models/car_model.dart';
 import 'package:flutter/material.dart';
-// For ImageFilter
 import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart';
-
-// UI SCREEN (HALAMAN DETAIL MOBIL)
+import 'package:go_router/go_router.dart'; // Wajib import ini
 
 const Color _primaryAccentColor = Color(0xFFD5001C);
 const Color _darkBackground = Color(0xFF121212);
@@ -22,7 +19,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
   late final ScrollController _scrollController;
   late final TabController _tabController;
   bool _isStickyHeaderVisible = false;
-
   final double _imageHeight = 350.0;
 
   @override
@@ -69,7 +65,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
             ],
           ),
           _buildStickyHeader(),
-          // Placed back button here to ensure it's always on top and tappable
+          // TOMBOL BACK
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -77,7 +73,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                 backgroundColor: Colors.black.withAlpha((0.5 * 255).round()),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.pop(), // Aksi Back
                 ),
               ),
             ),
@@ -87,6 +83,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
     );
   }
 
+  // --- Helper Widgets (Sama seperti kode asli Anda) ---
+  
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       expandedHeight: _imageHeight,
@@ -94,15 +92,15 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
       elevation: 0,
       pinned: true,
       stretch: true,
-      automaticallyImplyLeading: false, // We use a custom back button
+      automaticallyImplyLeading: false, 
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: widget.model.assetPath, // Changed from imageUrl to assetPath
+          tag: widget.model.assetPath,
           child: Stack(
             fit: StackFit.expand,
             children: [
               Image.asset(
-                widget.model.assetPath, // Changed from imageUrl to assetPath
+                widget.model.assetPath,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
                 const Center(child: Text('Image not found', style: TextStyle(color: Colors.white))),

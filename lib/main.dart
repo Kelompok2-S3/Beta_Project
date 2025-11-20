@@ -1,10 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:beta_project/config/app_theme.dart';
 import 'package:beta_project/router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() {
-  usePathUrlStrategy();
+  // Kita hapus usePathUrlStrategy() dulu biar jalan lancar
   runApp(const MyApp());
 }
 

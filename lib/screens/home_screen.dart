@@ -11,14 +11,6 @@ import '../widgets/promo_section.dart';
 import '../widgets/featured_section.dart';
 import '../widgets/app_footer.dart';
 
-// =================================================================
-// DEFINITIVE FIXED VERSION
-// This version restores the full UI with the corrected layout structure.
-// The core issue was invisible overlays in a nested Stack blocking taps.
-// This new structure places all overlays in a single top-level Stack,
-// which correctly handles user interaction.
-// =================================================================
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -47,17 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     final screenHeight = MediaQuery.of(context).size.height;
     final offset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
-    // Use a try-catch block for safety when accessing cubits during build/scroll phases.
     try {
       context.read<ScrollCubit>().updateScroll(offset);
-    } catch (e) {
-      // Cubit might not be available during hot reload or tree changes.
-    }
+    } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    // Providing all necessary cubits at the top level of the screen.
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => MenuCubit()),
@@ -66,10 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       child: Scaffold(
         backgroundColor: Colors.black,
-        // The main Stack that correctly layers the UI.
         body: Stack(
           children: [
-            // 1. The main scrollable content sits at the bottom of the Stack.
             ListView(
               controller: _scrollController,
               children: [
@@ -93,13 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 const AppFooter(isActive: true),
               ],
             ),
-
-            // 2. The AppHeader is positioned on top of the ListView.
-            // It is only a visual element and its pointer events are handled correctly.
             Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+              top: 0, left: 0, right: 0,
               child: BlocBuilder<ScrollCubit, double>(
                 builder: (context, scrollOffset) {
                   return BlocBuilder<MenuCubit, bool>(
@@ -114,9 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-
-            // 3. The AppMenu is the top-most layer, controlled by AnimatedOpacity and IgnorePointer.
-            // This ensures it only blocks taps when it is actually visible.
             BlocBuilder<MenuCubit, bool>(
               builder: (context, isMenuOpen) {
                 return AnimatedOpacity(

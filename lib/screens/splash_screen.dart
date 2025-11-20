@@ -13,11 +13,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Wait for 3 seconds then navigate to the home screen at the root path '/'.
     Timer(const Duration(seconds: 3), () {
       if (mounted) {
-        // Use pushReplacement to navigate to '/' so the user can't go back to the splash screen.
-        context.pushReplacement('/');
+        // Pindah ke Home dan hapus history splash
+        context.go('/'); 
       }
     });
   }
@@ -30,20 +29,16 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 1. Displaying the logo image.
             Image.asset(
-              'assets/images/utility/Ghost.png', // Using Ghost.png as the logo.
-              width: 150, // Setting a reasonable width for the logo.
+              'assets/images/utility/Ghost.png', 
+              width: 150, 
             ),
-            
-            const SizedBox(height: 20), // Space between logo and text.
-
-            // 2. Adding the "BRAND" text below the logo.
+            const SizedBox(height: 20), 
             const Text(
               'BRAND',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 32, // Slightly smaller font size for balance.
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 3,
               ),
