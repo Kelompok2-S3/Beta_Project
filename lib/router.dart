@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:beta_project/screens/home_screen.dart';
 import 'package:beta_project/screens/splash_screen.dart';
+import 'package:beta_project/screens/auth_screen.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/splash',
@@ -28,6 +29,10 @@ final goRouter = GoRouter(
 
         return CarDetailScreen(model: car ?? fallbackCar);
       },
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const AuthScreen(),
     ),
   ],
 );
