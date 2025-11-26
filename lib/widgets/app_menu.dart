@@ -1,6 +1,6 @@
 import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
 import 'package:beta_project/cubits/app_menu/app_menu_state.dart';
-import 'package:beta_project/data/car_database.dart';
+import 'package:beta_project/data/car_repository.dart';
 import 'package:beta_project/models/car_model.dart';
 import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
@@ -27,8 +27,8 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   late AnimationController _mainController;
   late AnimationController _subController;
 
-  final Map<String, List<String>> _brandsByLetter = {};
-  final Map<String, List<CarModel>> _modelsByBrand = {};
+  // Data is now fetched from the repository
+  final _carRepository = CarRepository.instance;
   final List<String> _mainMenuItems = ['Product', 'Discover', 'About'];
 
   @override
@@ -36,24 +36,6 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
     super.initState();
     _mainController = AnimationController(vsync: this, duration: 600.ms);
     _subController = AnimationController(vsync: this, duration: 400.ms);
-
-    for (var car in allCars) {
-      if (!_modelsByBrand.containsKey(car.brand)) {
-        _modelsByBrand[car.brand] = [];
-      }
-      _modelsByBrand[car.brand]!.add(car);
-    }
-    List<String> brands = _modelsByBrand.keys.toList();
-    brands.sort();
-    for (var brand in brands) {
-      if (brand.isNotEmpty) {
-        String firstLetter = brand.substring(0, 1).toUpperCase();
-        if (!_brandsByLetter.containsKey(firstLetter)) {
-          _brandsByLetter[firstLetter] = [];
-        }
-        _brandsByLetter[firstLetter]!.add(brand);
-      }
-    }
   }
 
   @override
@@ -178,7 +160,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
         }
 
         if (state.selectedBrand != null) {
-          final models = _modelsByBrand[state.selectedBrand] ?? [];
+          final models = _carRepository.modelsByBrand[state.selectedBrand] ?? [];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -193,12 +175,12 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
           );
         }
 
-        final letters = _brandsByLetter.keys.toList();
+        final letters = _carRepository.brandsByLetter.keys.toList();
         return ListView.builder(
           itemCount: letters.length,
           itemBuilder: (context, index) {
             final letter = letters[index];
-            final brands = _brandsByLetter[letter]!;
+            final brands = _carRepository.brandsByLetter[letter]!;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
