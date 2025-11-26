@@ -41,7 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final offset = (_scrollController.offset / screenHeight).clamp(0.0, 1.0);
     try {
       context.read<ScrollCubit>().updateScroll(offset);
-    } catch (e) {}
+    } catch (e) {
+      // Ignored. This can happen if the cubit is not yet available.
+    }
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
 
 final List<CarModel> audiCars = [
   CarModel(name: 'S1', brand: 'Audi', description: '', assetPath: 'assets/images/Audi/Audi_Audi_S1.png', power: '', acceleration: '', topSpeed: '', price: '', engine: '', displacement: '', torque: '', drive: '', galleryImages: ['assets/images/Audi/Audi_Audi_S1.png'], technicalData: [SpecificationGroup(title: 'Engine', specs: {'Type': '', 'Displacement': ''})]),

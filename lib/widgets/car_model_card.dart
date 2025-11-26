@@ -1,4 +1,4 @@
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

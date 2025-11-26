@@ -1,4 +1,4 @@
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
 import '../data/amc_data.dart';
 import '../data/amg_data.dart';
 import '../data/ats_data.dart';
