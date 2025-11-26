@@ -1,5 +1,5 @@
 import 'package:beta_project/data/car_repository.dart';
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
 import 'package:beta_project/widgets/car_model_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
