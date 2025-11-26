@@ -1,7 +1,7 @@
 import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
 import 'package:beta_project/cubits/app_menu/app_menu_state.dart';
 import 'package:beta_project/data/car_repository.dart';
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
 import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:beta_project/screens/discover_detail_screen.dart';
@@ -28,7 +28,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   late AnimationController _subController;
 
   // Data is now fetched from the repository
-  final _carRepository = CarRepository.instance;
+  final _carRepository = CarRepositoryImpl.instance;
   final List<String> _mainMenuItems = ['Product', 'Discover', 'About'];
 
   @override

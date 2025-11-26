@@ -19,12 +19,12 @@ final goRouter = GoRouter(
       path: '/car/:name',
       builder: (context, state) {
         final carName = Uri.decodeComponent(state.pathParameters['name']!);
-        final car = CarRepository.instance.findCarByName(carName);
+        final car = CarRepositoryImpl.instance.findCarByName(carName);
         
         // Fallback to a default car if not found
-        final fallbackCar = CarRepository.instance.carouselCars.isNotEmpty 
-            ? CarRepository.instance.carouselCars.first 
-            : CarRepository.instance.allCars.first;
+        final fallbackCar = CarRepositoryImpl.instance.carouselCars.isNotEmpty 
+            ? CarRepositoryImpl.instance.carouselCars.first 
+            : CarRepositoryImpl.instance.allCars.first;
 
         return CarDetailScreen(model: car ?? fallbackCar);
       },

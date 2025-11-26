@@ -1,4 +1,5 @@
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
+import 'package:beta_project/domain/repositories/car_repository.dart' as domain;
 import 'amc_data.dart';
 import 'amg_data.dart';
 import 'ats_data.dart';
@@ -57,14 +58,14 @@ import 'willys_data.dart';
 import 'casey_currie_motorsports_data.dart';
 import 'universal_studios_data.dart';
 
-class CarRepository {
+class CarRepositoryImpl implements domain.CarRepository {
   // Private constructor
-  CarRepository._() {
+  CarRepositoryImpl._() {
     _initializeData();
   }
 
   // Singleton instance
-  static final CarRepository instance = CarRepository._();
+  static final CarRepositoryImpl instance = CarRepositoryImpl._();
 
   // Data storage
   late final List<CarModel> _carouselCars;
@@ -169,12 +170,18 @@ class CarRepository {
   }
 
   // Public accessors
+  @override
   List<CarModel> get carouselCars => _carouselCars;
+  @override
   Map<String, List<CarModel>> get menuCars => _menuCars;
+  @override
   List<CarModel> get allCars => _allCars;
+  @override
   Map<String, List<String>> get brandsByLetter => _brandsByLetter;
+  @override
   Map<String, List<CarModel>> get modelsByBrand => _modelsByBrand;
 
+  @override
   CarModel? findCarByName(String name) {
     try {
       return allCars.firstWhere((car) => car.name == name);

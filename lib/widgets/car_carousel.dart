@@ -1,5 +1,6 @@
 import 'package:beta_project/data/car_repository.dart';
 import 'package:beta_project/domain/entities/car_model.dart';
+import 'package:beta_project/domain/usecases/get_carousel_cars.dart';
 import 'package:beta_project/widgets/car_model_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,9 +10,14 @@ class CarCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access cars from the repository
-    final carRepository = CarRepository.instance;
-    final List<CarModel> cars = (carRepository.carouselCars.toList()..shuffle()).take(4).toList();
+    // 1. Dapatkan instance dari implementasi repository
+    final carRepository = CarRepositoryImpl.instance;
+    
+    // 2. Buat instance dari Use Case, berikan repository kepadanya
+    final getCarouselCars = GetCarouselCars(carRepository);
+
+    // 3. Panggil Use Case untuk mendapatkan data
+    final List<CarModel> cars = getCarouselCars();
 
     return SizedBox(
       height: 350,
