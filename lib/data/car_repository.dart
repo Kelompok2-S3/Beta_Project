@@ -189,4 +189,15 @@ class CarRepositoryImpl implements domain.CarRepository {
       return null;
     }
   }
+
+  @override
+  List<CarModel> searchCarsByName(String query) {
+    if (query.isEmpty) {
+      return [];
+    }
+    final lowerCaseQuery = query.toLowerCase();
+    return allCars
+        .where((car) => car.name.toLowerCase().contains(lowerCaseQuery))
+        .toList();
+  }
 }

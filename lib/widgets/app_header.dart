@@ -1,7 +1,8 @@
-
 import 'dart:ui';
+import 'package:beta_project/data/car_repository.dart';
 import 'package:beta_project/screens/about_us_screen.dart';
 import 'package:beta_project/screens/discover_detail_screen.dart';
+import 'package:beta_project/widgets/car_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,6 +62,17 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
+    final searchButton = IconButton(
+      onPressed: () {
+        showSearch(
+          context: context,
+          delegate: CarSearchDelegate(CarRepositoryImpl.instance),
+        );
+      },
+      icon: const Icon(Icons.search, color: Colors.white),
+      tooltip: 'Search Cars',
+    );
+
     void navigateToAbout() {
       Navigator.push(
         context,
@@ -103,28 +115,23 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      onPressed: navigateToAbout,
-                      icon: const Icon(Icons.info_outline, color: Colors.white),
-                      tooltip: 'About Us',
-                    ),
+                    searchButton,
                     menuButton,
                   ],
                 )
-                    else
+              else
                 Row(
                   children: [
-                    // Products button should open the menu and select Product
                     _buildNavButton(context, 'Products', onPressed: () {
-                      // toggle menu open/close
                       toggleMenu();
-                      // ask AppMenuCubit to select Product (if available)
                       try {
                         context.read<AppMenuCubit>().selectMenu('Product');
                       } catch (_) {}
                     }),
                     _buildNavButton(context, 'Discover', onPressed: navigateToServices),
                     _buildNavButton(context, 'About', onPressed: navigateToAbout),
+                    searchButton,
+                    const SizedBox(width: 8),
                     menuButton,
                   ],
                 ),

@@ -1,4 +1,4 @@
-import 'package:beta_project/models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart';
 
 final List<CarModel> fordCars = [
   CarModel(name: 'GT70', brand: 'Ford', description: '', assetPath: 'assets/images/Ford/Ford_Ford_GT70.png', power: '', acceleration: '', topSpeed: '', price: '', engine: '', displacement: '', torque: '', drive: '', galleryImages: ['assets/images/Ford/Ford_Ford_GT70.png'], technicalData: [SpecificationGroup(title: 'Engine', specs: {'Type': '', 'Displacement': ''})]),

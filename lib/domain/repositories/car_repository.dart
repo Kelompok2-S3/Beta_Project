@@ -7,4 +7,5 @@ abstract class CarRepository {
   Map<String, List<String>> get brandsByLetter;
   Map<String, List<CarModel>> get modelsByBrand;
   CarModel? findCarByName(String name);
+  List<CarModel> searchCarsByName(String query);
 }
