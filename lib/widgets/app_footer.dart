@@ -76,7 +76,7 @@ class AppFooter extends StatelessWidget {
         context,
         'Community',
         [
-          _buildFooterLink(context, 'Blog', () {}),
+          _buildFooterLink(context, 'Blog', () => context.go('/about-app')),
         ],
       ),
     ];
