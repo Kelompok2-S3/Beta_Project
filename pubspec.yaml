@@ -35,7 +35,7 @@ flutter:
     - assets/images/AMC/
     - assets/images/AMG/
     - assets/images/ATS/
-    - assets/images/Abart/
+    - assets/images/Abarth/
     - assets/images/Acura/
     - assets/images/Alfa/
     - assets/images/Alpine/
@@ -49,26 +49,39 @@ flutter:
     - assets/images/Auto/
     - assets/images/BAC/
     - assets/images/BMW/
-    - assets/images/Bently/
+    - assets/images/Bentley/
+    - assets/images/Brabham/
     - assets/images/Bugatti/
+    - assets/images/Buick/
     - assets/images/Cadillac/
     - assets/images/Chevrolet/
+    - assets/images/Czinger/
+    - assets/images/Datsun/
+    - assets/images/DeBerti/
     - assets/images/Dodge/
+    - assets/images/FIAT/
+    - assets/images/Fast/
     - assets/images/Ferrari/
     - assets/images/Ford/
     - assets/images/Formula/
+    - assets/images/Forsberg/
     - assets/images/GMC/
     - assets/images/Hennessey/
+    - assets/images/Holden/
     - assets/images/Honda/
     - assets/images/Hoonigan/
     - assets/images/Hot Wheels/
     - assets/images/Hyundai/
     - assets/images/Jaguar/
     - assets/images/Jeep/
+    - assets/images/KTM/
     - assets/images/Koenigsegg/
     - assets/images/Lamborghini/
+    - assets/images/Lancia/
     - assets/images/Lexus/
+    - assets/images/Lola/
     - assets/images/Lotus/
+    - assets/images/MG/
     - assets/images/MINI/
     - assets/images/Maserati/
     - assets/images/Mazda/
@@ -78,14 +91,24 @@ flutter:
     - assets/images/Mercury/
     - assets/images/Meyers/
     - assets/images/Mitsubishi/
+    - assets/images/Morgan/
+    - assets/images/Mosler/
     - assets/images/Nissan/
+    - assets/images/Oldsmobile/
     - assets/images/Pagani/
     - assets/images/Plymouth/
+    - assets/images/Pontiac/
     - assets/images/Porsche/
+    - assets/images/Radical/
     - assets/images/Renault/
+    - assets/images/SIERRA/
+    - assets/images/Saleen/
+    - assets/images/Shelby/
     - assets/images/Subaru/
     - assets/images/Toyota/
+    - assets/images/Ultima/
     - assets/images/Volkswagen/
+    - assets/images/Volvo/
     - assets/videos/
     - assets/images/utility/
     - assets/images/profile/
