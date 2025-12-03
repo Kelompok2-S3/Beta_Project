@@ -87,18 +87,49 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
     }
     context.read<AppMenuCubit>().selectMenu(menuKey);
   }
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AppMenuCubit, AppMenuState>(
+      listener: (context, state) {
+        if (state.selectedMenu == 'Car Selection' || state.selectedBrand != null) {
+          _subController.forward(from: 0.0);
+        } else {
+          _subController.reverse();
+        }
+        
+        // Fetch models if brand is selected
+        if (state.selectedBrand != null) {
+           _fetchModelsForBrand(state.selectedBrand!);
+        }
+      },
       child: Container(
-        // ...
+        color: Colors.black.withAlpha(230),
         child: Stack(
           children: [
-            // ...
+            Positioned(
+              top: 20,
+              right: 20,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                onPressed: widget.toggleMenu,
+              ).animate(controller: _mainController).fade(duration: 400.ms, delay: 200.ms),
+            ),
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.only(top: 80.0, left: 60, right: 60),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ...
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ..._mainMenuItems.map((key) => _buildMainMenuItem(key)),
+                          _buildAuthMenuItem(),
+                        ],
+                      ),
+                    ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 40),
@@ -114,6 +145,59 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Widget _buildMainMenuItem(String text) {
+    return BlocBuilder<AppMenuCubit, AppMenuState>(
+      builder: (context, state) {
+        final bool isSelected = state.selectedMenu == text;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          child: GestureDetector(
+            onTap: () => _onMainMenuSelected(text),
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    color: isSelected ? Colors.white : Colors.white70,
+                  ),
+            ),
+          ),
+        ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+      },
+    );
+  }
+
+  Widget _buildAuthMenuItem() {
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final bool isAuthenticated = state is AuthAuthenticated;
+        final String text = isAuthenticated ? 'Logout' : 'Login';
+        
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          child: GestureDetector(
+            onTap: () {
+              if (isAuthenticated) {
+                context.read<AuthCubit>().logout();
+                widget.toggleMenu(); // Close menu after logout
+              } else {
+                widget.toggleMenu(); // Close menu before navigating
+                context.go('/login');
+              }
+            },
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white70,
+                  ),
+            ),
+          ),
+        ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+      },
+    );
+  }
+
 
   Future<void> _fetchModelsForBrand(String brand) async {
     // Check if we already have models, if not fetch
