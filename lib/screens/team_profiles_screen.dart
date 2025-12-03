@@ -8,39 +8,46 @@ class TeamProfilesScreen extends StatelessWidget {
 
   final List<Map<String, String>> _teamMembers = const [
     {
-      'name': 'Muhammad Dava Firmansyah',
-      'role': 'Team Member',
-      'image': 'assets/images/profile/MuhammadDavaFirmansyah.jpg',
-    },
-    {
-      'name': 'Naufal Akbar',
-      'role': 'Team Member',
-      'image': 'assets/images/profile/NaufalAkbar.jpg',
-    },
-    {
-      'name': 'Naufal Yudantara Saputra',
-      'role': 'Team Member',
-      'image': 'assets/images/profile/NaufalYudantaraSaputra.jpg',
-    },
-    {
-      'name': 'Putera',
-      'role': 'Team Member',
-      'image': 'assets/images/profile/Putera.jpg',
-    },
-    {
-      'name': 'Rendy Agus Dwi Satrio',
-      'role': 'Team Member',
-      'image': 'assets/images/profile/RendyAgusDwiSatrio.jpg',
-    },
-    {
       'name': 'Rizma Indra Pramudya',
-      'role': 'Team Member',
+      'nim': '24111814117',
+      'role': '( Leader ) Fullstack Developer',
       'image': 'assets/images/profile/RizmaIndraPramudya.jpg',
     },
     {
-      'name': 'Roin',
-      'role': 'Team Member',
+      'name': 'Putera Al Khalidi',
+      'nim': '24111814077',
+      'role': 'Fullstack Developer',
+      'image': 'assets/images/profile/Putera.jpg',
+    },
+    {
+      'name': 'Muhammad Abdullah Ro’in',
+      'nim': '24111814054',
+      'role': 'Database Engineer',
       'image': 'assets/images/profile/Roin.jpg',
+    },
+    {
+      'name': 'Rendy Agus Dwi Satrio',
+      'nim': '24111814094',
+      'role': 'Database Engineer',
+      'image': 'assets/images/profile/RendyAgusDwiSatrio.jpg',
+    },
+    {
+      'name': 'Naufal Yudantara Saputra',
+      'nim': '24111814023',
+      'role': 'Writer',
+      'image': 'assets/images/profile/NaufalYudantaraSaputra.jpg',
+    },
+    {
+      'name': 'Muhammad Dava Firmansyah',
+      'nim': '24111814030',
+      'role': 'Writer',
+      'image': 'assets/images/profile/MuhammadDavaFirmansyah.jpg',
+    },
+    {
+      'name': 'Naufal Akbar PP',
+      'nim': '24111814027',
+      'role': 'Writer',
+      'image': 'assets/images/profile/NaufalAkbar.jpg',
     },
   ];
 
@@ -106,7 +113,7 @@ class TeamProfilesScreen extends StatelessWidget {
                     maxCrossAxisExtent: 300,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
-                    childAspectRatio: 0.8,
+                    childAspectRatio: 0.75, // Adjusted for extra text
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -141,8 +148,8 @@ class TeamProfilesScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 120,
-                height: 120,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
@@ -152,7 +159,7 @@ class TeamProfilesScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
@@ -165,9 +172,18 @@ class TeamProfilesScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 4),
+              Text(
+                member['nim']!,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
+                  fontSize: 12,
+                ),
+              ),
               const SizedBox(height: 8),
               Text(
                 member['role']!,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.blue[400],
                   fontSize: 14,
@@ -177,11 +193,9 @@ class TeamProfilesScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildSocialIcon(Icons.facebook),
-                  const SizedBox(width: 10),
-                  _buildSocialIcon(Icons.link), // LinkedIn alternative
-                  const SizedBox(width: 10),
-                  _buildSocialIcon(Icons.alternate_email), // Twitter/X alternative
+                  _buildSocialIcon('assets/images/utility/instagram.png'), // Placeholder or IconData
+                  const SizedBox(width: 15),
+                  _buildSocialIcon('assets/images/utility/github.png'), // Placeholder or IconData
                 ],
               ),
             ],
@@ -191,7 +205,29 @@ class TeamProfilesScreen extends StatelessWidget {
     ).animate().fadeIn(delay: (100 * index).ms).scale();
   }
 
-  Widget _buildSocialIcon(IconData icon) {
+  Widget _buildSocialIcon(String assetPath) {
+    // Using standard Icons for now as requested "instagram dan github"
+    // If specific assets are needed, I'd use Image.asset.
+    // But usually "Icon" implies IconData. 
+    // However, Flutter doesn't have built-in Insta/Github icons in Material Icons.
+    // I will use text or generic icons if font_awesome_flutter is not available.
+    // Checking pubspec... no font_awesome.
+    // I will use generic icons for now and ask user or use images if available.
+    // Wait, user said "icon nya".
+    // I'll use Icons.code for Github and Icons.camera_alt for Instagram as placeholders
+    // OR better, I'll just use the text "IG" and "GH" or similar if no icons.
+    // ACTUALLY, I can use `assets/images/utility/` if they exist?
+    // Let's check if I can use standard icons that look similar.
+    // Github -> Icons.code (or similar)
+    // Instagram -> Icons.camera_alt
+    
+    IconData icon;
+    if (assetPath.contains('instagram')) {
+      icon = Icons.camera_alt; // Placeholder for Instagram
+    } else {
+      icon = Icons.code; // Placeholder for Github
+    }
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -201,7 +237,7 @@ class TeamProfilesScreen extends StatelessWidget {
       child: Icon(
         icon,
         color: Colors.white,
-        size: 16,
+        size: 20,
       ),
     );
   }
