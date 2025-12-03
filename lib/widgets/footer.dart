@@ -19,62 +19,114 @@ class Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Animate the icon row individually
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () => _launchURL('https://www.facebook.com/KoenigseggAutomotiveAB'),
-                  icon: const Icon(Icons.facebook, color: Colors.white, size: 30),
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                  onPressed: () => _launchURL('https://www.instagram.com/koenigsegg'),
-                  icon: const Icon(Icons.camera_alt, color: Colors.white, size: 30),
-                ),
-              ],
-            )
-            .animate(target: isActive ? 1 : 0)
-            .fade(duration: 900.ms, delay: 200.ms)
-            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-            
-            const SizedBox(height: 20),
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      child: Column(
+        children: [
+          // 3-Column Layout
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Column 1: About Us
+              _buildFooterColumn(
+                context,
+                'About Us',
+                [
+                  _buildFooterLink(context, 'Our Story', () => context.go('/our-story')),
+                  _buildFooterLink(context, 'Contact', () {}),
+                  _buildFooterLink(context, 'Careers', () {}),
+                  _buildFooterLink(context, 'Press', () {}),
+                ],
+              ),
+              
+              // Column 2: Services
+              _buildFooterColumn(
+                context,
+                'Services',
+                [
+                  _buildFooterLink(context, 'Customer Login', () => context.go('/login')),
+                  _buildFooterLink(context, 'Store', () {}),
+                  _buildFooterLink(context, 'Find a Dealer', () {}),
+                  _buildFooterLink(context, 'My Account', () {}),
+                ],
+              ),
+              
+              // Column 3: Community
+              _buildFooterColumn(
+                context,
+                'Community',
+                [
+                  _buildFooterLink(context, 'Blog', () {}),
+                  _buildFooterLink(context, 'Events', () {}),
+                  _buildFooterLink(context, 'Forums', () {}),
+                ],
+              ),
+            ],
+          ).animate(target: isActive ? 1 : 0).fade(duration: 600.ms).slideY(begin: 0.1, end: 0),
 
-            // Navigation Links
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () => context.go('/our-story'),
-                  child: const Text('Our Story', style: TextStyle(color: Colors.white70)),
-                ),
-                const SizedBox(width: 20),
-                TextButton(
-                  onPressed: () => context.go('/team-profiles'),
-                  child: const Text('About Us', style: TextStyle(color: Colors.white70)),
-                ),
-              ],
-            )
-            .animate(target: isActive ? 1 : 0)
-            .fade(duration: 900.ms, delay: 300.ms)
-            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
+          const SizedBox(height: 40),
+          const Divider(color: Colors.white24),
+          const SizedBox(height: 20),
 
-            const SizedBox(height: 30),
+          // Social Icons & Copyright
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => _launchURL('https://www.facebook.com/KoenigseggAutomotiveAB'),
+                    icon: const Icon(Icons.facebook, color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    onPressed: () => _launchURL('https://www.instagram.com/koenigsegg'),
+                    icon: const Icon(Icons.camera_alt, color: Colors.white, size: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                '© 2024 Koenigsegg Automotive AB. All rights reserved.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white54, fontSize: 12),
+              ),
+            ],
+          ).animate(target: isActive ? 1 : 0).fade(duration: 600.ms, delay: 200.ms),
+        ],
+      ),
+    );
+  }
 
-            // Animate the copyright text individually with a delay
-            const Text(
-              '© 2024 Koenigsegg Automotive AB. All rights reserved.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70, fontSize: 12),
-            )
-            .animate(target: isActive ? 1 : 0)
-            .fade(duration: 900.ms, delay: 350.ms)
-            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-          ],
+  Widget _buildFooterColumn(BuildContext context, String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 20),
+        ...children,
+      ],
+    );
+  }
+
+  Widget _buildFooterLink(BuildContext context, String text, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: InkWell(
+        onTap: onTap,
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 14,
+          ),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
 import 'package:beta_project/cubits/app_menu/app_menu_state.dart';
 import 'package:beta_project/data/car_repository.dart';
 import 'package:beta_project/domain/entities/car_model.dart';
-import 'package:beta_project/screens/about_us_screen.dart';
+
 import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:beta_project/screens/discover_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   // Data is now fetched from the repository
   final _carRepository = CarRepositoryImpl.instance;
-  final List<String> _mainMenuItems = ['Product', 'Discover', 'About'];
+  final List<String> _mainMenuItems = ['Product', 'Discover'];
 
   @override
   void initState() {
@@ -59,11 +59,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   }
 
   void _onMainMenuSelected(String menuKey) {
-    if (menuKey == 'About') {
-      widget.toggleMenu();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutUsScreen()));
-      return;
-    } else if (menuKey == 'Discover') {
+    if (menuKey == 'Discover') {
       widget.toggleMenu();
       Navigator.push(
         context,
