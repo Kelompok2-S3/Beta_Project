@@ -1,7 +1,9 @@
 import 'package:beta_project/domain/entities/car_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart'; // Wajib import ini
+import 'package:go_router/go_router.dart';
+import '../models/car_model.dart' as api_model;
+import '../services/car_service.dart';
 
 const Color _primaryAccentColor = Color(0xFFD5001C);
 const Color _darkBackground = Color(0xFF121212);
@@ -20,12 +22,62 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
   late final TabController _tabController;
   bool _isStickyHeaderVisible = false;
   final double _imageHeight = 350.0;
+  
+  final CarService _carService = CarService();
+  late Future<api_model.Car?> _apiCarFuture;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController()..addListener(_scrollListener);
+    _apiCarFuture = _fetchMatchingCar();
+  }
+
+  Future<api_model.Car?> _fetchMatchingCar() async {
+    try {
+      final cars = await _carService.fetchCars();
+      // Try to find a match based on name or fuzzy matching
+      try {
+        return cars.firstWhere((car) {
+          // 1. Check if source URL contains the name (most reliable if URL follows pattern)
+          final urlName = _extractModelFromUrl(car.sourceUrl).toLowerCase();
+          final localName = widget.model.name.toLowerCase();
+          
+          if (urlName.isNotEmpty && (localName.contains(urlName) || urlName.contains(localName))) {
+             return true;
+          }
+          
+          // 2. Fallback: Check if brand matches AND name contains parts
+          if (car.brand.toLowerCase() == widget.model.brand.toLowerCase()) {
+             // Simple containment check
+             return localName.contains(car.brand.toLowerCase()) || 
+                    localName.contains(car.year) || // Sometimes year is in name
+                    car.sourceUrl.toLowerCase().contains(localName.replaceAll(' ', '_'));
+          }
+          return false;
+        });
+      } catch (e) {
+        return null; // No match found
+      }
+    } catch (e) {
+      debugPrint('Error fetching API cars: $e');
+      return null;
+    }
+  }
+
+  String _extractModelFromUrl(String url) {
+    try {
+      final uri = Uri.parse(url);
+      final segments = uri.pathSegments;
+      if (segments.isNotEmpty) {
+        String title = segments.last;
+        title = Uri.decodeComponent(title);
+        title = title.replaceAll('_', ' ');
+        return title;
+      }
+    } catch (_) {}
+    return '';
   }
 
   void _scrollListener() {
@@ -268,47 +320,105 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
   }
 
   Widget _buildTechSpecsTab() {
-    final validSpecGroups = widget.model.technicalData.where((group) {
-      group.specs.removeWhere((key, value) => value.trim().isEmpty);
-      return group.specs.isNotEmpty;
-    }).toList();
-
-    if (validSpecGroups.isEmpty) {
-      return const Center(child: Text("No technical specifications available.", style: TextStyle(color: Colors.grey)));
-    }
-
-    return Theme(
-      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: validSpecGroups.length,
-        itemBuilder: (context, index) {
-          final group = validSpecGroups[index];
-          return Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            decoration: BoxDecoration(color: _darkCard, borderRadius: BorderRadius.circular(12)),
-            child: ExpansionTile(
-              initiallyExpanded: index == 0,
-              iconColor: _primaryAccentColor,
-              collapsedIconColor: Colors.grey[400],
-              tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              title: Text(group.title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-              children: [
-                const Divider(height: 1, color: Color(0xFF333333)),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                  child: Column(
-                    children: group.specs.entries.map((entry) {
-                      return _buildTechnicalDetailRow(label: entry.key, value: entry.value);
-                    }).toList(),
-                  ),
-                ),
-              ],
+    return FutureBuilder<api_model.Car?>(
+      future: _apiCarFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: CircularProgressIndicator(color: _primaryAccentColor),
             ),
           );
-        },
-      ),
+        }
+
+        if (snapshot.hasData && snapshot.data != null) {
+          final apiCar = snapshot.data!;
+          // Use API data
+          final specs = {
+            'Engine': {'Type': apiCar.engine, 'Power': apiCar.power, 'Torque': apiCar.torque},
+            'Performance': {'Weight': apiCar.weight},
+            'General': {'Category': apiCar.category, 'Year': apiCar.year},
+          };
+
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: specs.length,
+            itemBuilder: (context, index) {
+              final category = specs.keys.elementAt(index);
+              final details = specs[category]!;
+              
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(color: _darkCard, borderRadius: BorderRadius.circular(12)),
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  iconColor: _primaryAccentColor,
+                  collapsedIconColor: Colors.grey[400],
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  title: Text(category, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  children: [
+                    const Divider(height: 1, color: Color(0xFF333333)),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: Column(
+                        children: details.entries.map((entry) {
+                          return _buildTechnicalDetailRow(label: entry.key, value: entry.value);
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }
+
+        // Fallback to existing hardcoded data
+        final validSpecGroups = widget.model.technicalData.where((group) {
+          group.specs.removeWhere((key, value) => value.trim().isEmpty);
+          return group.specs.isNotEmpty;
+        }).toList();
+
+        if (validSpecGroups.isEmpty) {
+          return const Center(child: Text("No technical specifications available.", style: TextStyle(color: Colors.grey)));
+        }
+
+        return Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: validSpecGroups.length,
+            itemBuilder: (context, index) {
+              final group = validSpecGroups[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(color: _darkCard, borderRadius: BorderRadius.circular(12)),
+                child: ExpansionTile(
+                  initiallyExpanded: index == 0,
+                  iconColor: _primaryAccentColor,
+                  collapsedIconColor: Colors.grey[400],
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  title: Text(group.title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  children: [
+                    const Divider(height: 1, color: Color(0xFF333333)),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: Column(
+                        children: group.specs.entries.map((entry) {
+                          return _buildTechnicalDetailRow(label: entry.key, value: entry.value);
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

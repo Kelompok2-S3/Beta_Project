@@ -119,10 +119,10 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               else
                 Row(
                   children: [
-                    _buildNavButton(context, 'Products', onPressed: () {
+                    _buildNavButton(context, 'Car Selection', onPressed: () {
                       toggleMenu();
                       try {
-                        context.read<AppMenuCubit>().selectMenu('Product');
+                        context.read<AppMenuCubit>().selectMenu('Car Selection');
                       } catch (_) {}
                     }),
                     _buildNavButton(context, 'Discover', onPressed: navigateToServices),

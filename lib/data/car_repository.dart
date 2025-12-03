@@ -1,162 +1,105 @@
 import 'package:beta_project/domain/entities/car_model.dart';
 import 'package:beta_project/domain/repositories/car_repository.dart' as domain;
-import 'amc_data.dart';
-import 'amg_data.dart';
-import 'ats_data.dart';
-import 'bac_data.dart';
-import 'bmw_data.dart';
-import 'gmc_data.dart';
-import 'alfa_data.dart';
-import 'audi_data.dart';
-import 'auto_data.dart';
-import 'ford_data.dart';
-import 'jeep_data.dart';
-import 'mini_data.dart';
-import 'abart_data.dart';
-import 'acura_data.dart';
-import 'ariel_data.dart';
-import 'dodge_data.dart';
-import 'honda_data.dart';
-import 'lexus_data.dart';
-import 'lotus_data.dart';
-import 'mazda_data.dart';
-import 'alpine_data.dart';
-import 'apollo_data.dart';
-import 'ascari_data.dart';
-import 'bently_data.dart';
-import 'jaguar_data.dart';
-import 'nissan_data.dart';
-import 'pagani_data.dart';
-import 'subaru_data.dart';
-import 'toyota_data.dart';
-import 'bugatti_data.dart';
-import 'ferrari_data.dart';
-import 'formula_data.dart';
-import 'hyundai_data.dart';
-import 'mclaren_data.dart';
-import 'porsche_data.dart';
-import 'renault_data.dart';
-import 'cadillac_data.dart';
-import 'hoonigan_data.dart';
-import 'maserati_data.dart';
-import 'mercedes_data.dart';
-import 'chevrolet_data.dart';
-import 'hennessey_data.dart';
-import 'alumicraft_data.dart';
-import 'hot_wheels_data.dart';
-import 'koenigsegg_data.dart';
-import 'mitsubishi_data.dart';
-import 'volkswagen_data.dart';
-import 'lamborghini_data.dart';
-import 'aston_martin_data.dart';
-import 'buick_data.dart';
-import 'brabham_data.dart';
-import 'autozam_data.dart';
-import 'automobili_pininfarina_data.dart';
-import 'deberti_data.dart';
-import 'willys_data.dart';
-import 'casey_currie_motorsports_data.dart';
-import 'universal_studios_data.dart';
+import 'package:beta_project/services/car_service.dart';
+import 'package:beta_project/models/car_model.dart' as api;
 
 class CarRepositoryImpl implements domain.CarRepository {
   // Private constructor
-  CarRepositoryImpl._() {
-    _initializeData();
-  }
+  CarRepositoryImpl._();
 
   // Singleton instance
   static final CarRepositoryImpl instance = CarRepositoryImpl._();
 
   // Data storage
-  late final List<CarModel> _carouselCars;
-  late final Map<String, List<CarModel>> _menuCars;
-  late final List<CarModel> _allCars;
-  late final Map<String, List<String>> _brandsByLetter;
-  late final Map<String, List<CarModel>> _modelsByBrand;
+  List<CarModel> _allCars = [];
+  Map<String, List<CarModel>> _modelsByBrand = {};
+  Map<String, List<String>> _brandsByLetter = {};
+  
+  final CarService _carService = CarService();
+  bool _isInitialized = false;
 
-  void _initializeData() {
-    _carouselCars = [
-      ...ferrariCars,
-      ...lamborghiniCars,
-      ...koenigseggCars,
-      ...porscheCars,
-      ...bugattiCars,
-      ...mclarenCars,
-    ];
+  // Initialize data (Lightweight: Brands only)
+  Future<void> initialize() async {
+    // If already initialized and has data, skip.
+    // If initialized but empty, allow retry.
+    if (_isInitialized && _brandsByLetter.isNotEmpty) return;
 
-    _menuCars = {
-      'AMC': amcCars,
-      'AMG': amgCars,
-      'ATS': atsCars,
-      'BAC': bacCars,
-      'BMW': bmwCars,
-      'GMC': gmcCars,
-      'Alfa': alfaCars,
-      'Audi': audiCars,
-      'Auto': autoCars,
-      'Ford': fordCars,
-      'Jeep': jeepCars,
-      'MINI': miniCars,
-      'Abart': abartCars,
-      'Acura': acuraCars,
-      'Ariel': arielCars,
-      'Dodge': dodgeCars,
-      'Honda': hondaCars,
-      'Lexus': lexusCars,
-      'Lotus': lotusCars,
-      'Mazda': mazdaCars,
-      'Alpine': alpineCars,
-      'Apollo': apolloCars,
-      'Ascari': ascariCars,
-      'Bently': bentlyCars,
-      'Jaguar': jaguarCars,
-      'Nissan': nissanCars,
-      'Pagani': paganiCars,
-      'Subaru': subaruCars,
-      'Toyota': toyotaCars,
-      'Bugatti': bugattiCars,
-      'Ferrari': ferrariCars,
-      'Formula': formulaCars,
-      'Hyundai': hyundaiCars,
-      'McLaren': mclarenCars,
-      'Porsche': porscheCars,
-      'Renault': renaultCars,
-      'Cadillac': cadillacCars,
-      'Hoonigan': hooniganCars,
-      'Maserati': maseratiCars,
-      'Mercedes': mercedesCars,
-      'Chevrolet': chevroletCars,
-      'Hennessey': hennesseyCars,
-      'Alumicraft': alumicraftCars,
-      'Hot Wheels': hotWheelsCars,
-      'Koenigsegg': koenigseggCars,
-      'Mitsubishi': mitsubishiCars,
-      'Volkswagen': volkswagenCars,
-      'Lamborghini': lamborghiniCars,
-      'Aston Martin': astonMartinCars,
-      'Buick': buickCars,
-      'Brabham': brabhamCars,
-      'Autozam': autozamCars,
-      'Automobili Pininfarina': automobiliPininfarinaCars,
-      'DeBerti': debertiCars,
-      'Willys': willysCars,
-      'Casey Currie Motorsports': caseyCurrieMotorsportsCars,
-      'Universal Studios': universalStudiosCars,
-    };
+    try {
+      print("CarRepository: Fetching brands from API...");
+      final brands = await _carService.fetchBrands();
+      print("CarRepository: Fetched ${brands.length} brands.");
+      
+      _organizeBrands(brands);
+      
+      // Optionally fetch first page of cars for carousel/initial list
+      await fetchCarsPage(1);
 
-    _allCars = _menuCars.values.expand((cars) => cars).toList();
-
-    // Grouping logic from AppMenu
-    _modelsByBrand = {};
-    for (var car in _allCars) {
-      if (!_modelsByBrand.containsKey(car.brand)) {
-        _modelsByBrand[car.brand] = [];
-      }
-      _modelsByBrand[car.brand]!.add(car);
+      _isInitialized = true;
+    } catch (e, stackTrace) {
+      print("Error initializing CarRepository: $e");
+      print(stackTrace);
     }
+  }
 
+  Future<List<CarModel>> fetchCarsPage(int page) async {
+    try {
+      final apiCars = await _carService.fetchCars(page: page, limit: 20);
+      final newCars = apiCars.map((apiCar) {
+        try {
+          return _mapApiCarToDomain(apiCar);
+        } catch (e) {
+          print("CarRepository: Error mapping car ${apiCar.brand}: $e");
+          return null;
+        }
+      }).whereType<CarModel>().toList();
+
+      _allCars.addAll(newCars);
+      
+      for (var car in newCars) {
+        if (!_modelsByBrand.containsKey(car.brand)) {
+          _modelsByBrand[car.brand] = [];
+        }
+        // Avoid duplicates
+        if (!_modelsByBrand[car.brand]!.any((c) => c.name == car.name)) {
+           _modelsByBrand[car.brand]!.add(car);
+        }
+      }
+
+      return newCars;
+    } catch (e) {
+      print("CarRepository: Error fetching page $page: $e");
+      return [];
+    }
+  }
+
+  Future<void> fetchModelsForBrand(String brand) async {
+    // If we already have models for this brand, maybe we don't need to fetch?
+    // But since we only fetch brands initially, _modelsByBrand[brand] might be empty or incomplete.
+    // Let's fetch specifically for this brand.
+    try {
+      // Fetch a large number to get all models for this brand
+      final apiCars = await _carService.fetchCars(page: 1, limit: 100, brand: brand);
+      
+      if (!_modelsByBrand.containsKey(brand)) {
+        _modelsByBrand[brand] = [];
+      }
+
+      final domainCars = apiCars.map((apiCar) => _mapApiCarToDomain(apiCar)).toList();
+      
+      // Update the list, avoiding duplicates
+      final existingNames = _modelsByBrand[brand]!.map((c) => c.name).toSet();
+      for (var car in domainCars) {
+        if (!existingNames.contains(car.name)) {
+          _modelsByBrand[brand]!.add(car);
+        }
+      }
+    } catch (e) {
+      print("CarRepository: Error fetching models for brand $brand: $e");
+    }
+  }
+
+  void _organizeBrands(List<String> brands) {
     _brandsByLetter = {};
-    List<String> brands = _modelsByBrand.keys.toList();
     brands.sort();
     for (var brand in brands) {
       if (brand.isNotEmpty) {
@@ -169,15 +112,84 @@ class CarRepositoryImpl implements domain.CarRepository {
     }
   }
 
+  CarModel _mapApiCarToDomain(api.Car apiCar) {
+    // Extract Model Name from URL
+    String modelName = apiCar.sourceUrl.split('/').last;
+    modelName = Uri.decodeComponent(modelName);
+    String displayName = modelName.replaceAll('_', ' ');
+    
+    // Construct Asset Path
+    // Matches the scraper's logic: assets/images/Brand/Model_Name.png
+    // Note: Scraper uses clean_filename which removes special chars.
+    // We'll try to match that.
+    String cleanBrand = apiCar.brand.replaceAll(RegExp(r'[\\/*?:"<>|]'), "").trim();
+    String cleanModel = modelName.replaceAll(RegExp(r'[\\/*?:"<>|]'), "").trim();
+    
+    // The scraper seems to have saved files with underscores if the URL had them.
+    // Let's use the exact segment from URL as filename base if possible, 
+    // but the scraper code used `clean_filename(model_name)`.
+    // If model_name came from `url.split('/')[-1].replace('_', ' ')`, it has spaces.
+    // So filename has spaces.
+    // BUT user saw `Ferrari_Ferrari_SF90_Stradale.png`.
+    // This implies the URL segment was `Ferrari_Ferrari_SF90_Stradale` and `replace` didn't happen or I'm confused.
+    // Let's try to be robust: check both with spaces and underscores?
+    // We can't check file existence easily here.
+    // Let's stick to the most likely path: `assets/images/$cleanBrand/$cleanModel.png` (with spaces if modelName has spaces).
+    // If the user says the file is `Ferrari_Ferrari_SF90_Stradale.png`, that has underscores.
+    // So maybe I should NOT replace underscores in the filename construction?
+    // Let's try to keep underscores for the filename if the URL has them.
+    String filenameBase = apiCar.sourceUrl.split('/').last; // Keep underscores
+    String filename = filenameBase.replaceAll(RegExp(r'[\\/*?:"<>|]'), "").trim();
+    
+    String assetPath = 'assets/images/$cleanBrand/$filename.png';
+
+    return CarModel(
+      name: displayName,
+      brand: apiCar.brand,
+      price: 'Price on Request',
+      assetPath: assetPath,
+      description: 'Experience the power of the $displayName. A masterpiece of engineering from ${apiCar.brand}.',
+      power: apiCar.power,
+      acceleration: 'N/A',
+      topSpeed: 'N/A',
+      torque: apiCar.torque,
+      engine: apiCar.engine,
+      displacement: 'N/A',
+      drive: 'N/A',
+      galleryImages: [],
+      technicalData: [
+        SpecificationGroup(
+          title: 'Performance',
+          specs: {
+            'Power': apiCar.power,
+            'Torque': apiCar.torque,
+            'Weight': apiCar.weight,
+          },
+        ),
+        SpecificationGroup(
+          title: 'Engine',
+          specs: {
+            'Engine': apiCar.engine,
+            'Year': apiCar.year,
+          },
+        ),
+      ],
+    );
+  }
+
   // Public accessors
   @override
-  List<CarModel> get carouselCars => _carouselCars;
+  List<CarModel> get carouselCars => _allCars.take(6).toList(); // Just take first 6 for carousel
+  
   @override
-  Map<String, List<CarModel>> get menuCars => _menuCars;
+  Map<String, List<CarModel>> get menuCars => _modelsByBrand; // Map to modelsByBrand
+  
   @override
   List<CarModel> get allCars => _allCars;
+  
   @override
   Map<String, List<String>> get brandsByLetter => _brandsByLetter;
+  
   @override
   Map<String, List<CarModel>> get modelsByBrand => _modelsByBrand;
 

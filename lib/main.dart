@@ -5,7 +5,11 @@ import 'package:beta_project/cubits/auth_cubit.dart';
 import 'package:beta_project/config/app_theme.dart';
 import 'package:beta_project/router.dart';
 
-void main() {
+import 'package:beta_project/data/car_repository.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CarRepositoryImpl.instance.initialize();
   // Kita hapus usePathUrlStrategy() dulu biar jalan lancar
   runApp(const MyApp());
 }

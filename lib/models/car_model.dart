@@ -1,40 +1,43 @@
-class SpecificationGroup {
-  final String title;
-  final Map<String, String> specs;
-
-  SpecificationGroup({required this.title, required this.specs});
-}
-
-class CarModel {
-  final String name;
+class Car {
+  final String category;
   final String brand;
-  final String price;
-  final String assetPath; // Changed from imageUrl
-  final String description;
-  final String power;
-  final String acceleration;
-  final String topSpeed;
-  final String torque;
+  final String year;
   final String engine;
-  final String displacement;
-  final String drive;
-  final List<String> galleryImages;
-  final List<SpecificationGroup> technicalData;
+  final String power;
+  final String torque;
+  final String weight;
+  final String sourceUrl;
 
-  CarModel({
-    required this.name,
+  Car({
+    required this.category,
     required this.brand,
-    required this.price,
-    required this.assetPath, // Changed from imageUrl
-    required this.description,
-    required this.power,
-    required this.acceleration,
-    required this.topSpeed,
-    required this.torque,
+    required this.year,
     required this.engine,
-    required this.displacement,
-    required this.drive,
-    required this.galleryImages,
-    required this.technicalData,
+    required this.power,
+    required this.torque,
+    required this.weight,
+    required this.sourceUrl,
   });
+
+  factory Car.fromJson(Map<String, dynamic> json) {
+    String getValue(String keyPart) {
+      try {
+        final key = json.keys.firstWhere((k) => k.contains(keyPart), orElse: () => '');
+        return key.isNotEmpty ? json[key]?.toString() ?? '' : '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    return Car(
+      category: getValue('Kategori'),
+      brand: getValue('Merek'),
+      year: getValue('Tahun'),
+      engine: getValue('Mesin'),
+      power: getValue('Tenaga'),
+      torque: getValue('Torsi'),
+      weight: getValue('Berat'),
+      sourceUrl: getValue('Source URL'),
+    );
+  }
 }
