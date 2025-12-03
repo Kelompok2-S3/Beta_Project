@@ -114,17 +114,40 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
+<<<<<<< HEAD
                       width: 500, // Max width for the "card"
+=======
+                      width: 900, // Max width for the "card"
+>>>>>>> 8cd9e3ab77931b854e8024ae6ecf2185a8288932
                       constraints: const BoxConstraints(minHeight: 500),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(20),
+<<<<<<< HEAD
                         border: Border.all(color: Colors.white.withOpacity(0.3)),
                       ),
                       child: Container(
                         width: 500,
                         padding: const EdgeInsets.all(20),
                         child: _buildFormSection(),
+=======
+                        border: Border.all(color: Colors.white.withOpacity(0.1)),
+                      ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          // Responsive Layout
+                          if (constraints.maxWidth > 700) {
+                            return Row(
+                              children: [
+                                Expanded(child: _buildFormSection()),
+                                Expanded(child: _buildDecorativeSection()),
+                              ],
+                            );
+                          } else {
+                            return _buildFormSection();
+                          }
+                        },
+>>>>>>> 8cd9e3ab77931b854e8024ae6ecf2185a8288932
                       ),
                     ),
                   ),

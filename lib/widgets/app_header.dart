@@ -133,6 +133,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     _buildNavButton(context, 'Discover', onPressed: navigateToServices),
                     _buildNavButton(context, 'About', onPressed: navigateToAbout),
                     searchButton,
+<<<<<<< HEAD
                     BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
                         if (state is AuthAuthenticated) {
@@ -143,6 +144,12 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         return _buildNavButton(context, 'Login', onPressed: () => context.go('/login'));
                       },
                     ),
+=======
+<<<<<<< HEAD
+                    _buildNavButton(context, 'Login', onPressed: () => context.go('/login')),
+=======
+>>>>>>> 37d8daf4f9a92a5bff78a4f4395d721b55da4a70
+>>>>>>> 8cd9e3ab77931b854e8024ae6ecf2185a8288932
                     const SizedBox(width: 8),
                     menuButton,
                   ],
