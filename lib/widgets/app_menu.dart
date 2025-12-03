@@ -31,7 +31,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   // Data is now fetched from the repository
   final _carRepository = CarRepositoryImpl.instance;
-  final List<String> _mainMenuItems = ['Car Selection', 'Discover', 'Car Specs'];
+  final List<String> _mainMenuItems = ['Car Selection', 'Discover', 'Car Specs', 'About App'];
 
   @override
   void initState() {
@@ -83,6 +83,11 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
     if (menuKey == 'Car Specs') {
       widget.toggleMenu();
       context.go('/cars');
+      return;
+    }
+    if (menuKey == 'About App') {
+      widget.toggleMenu();
+      context.go('/about-app');
       return;
     }
     context.read<AppMenuCubit>().selectMenu(menuKey);
