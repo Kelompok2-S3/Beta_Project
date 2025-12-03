@@ -8,6 +8,7 @@ import 'package:beta_project/screens/our_story_screen.dart';
 import 'package:beta_project/screens/team_profiles_screen.dart';
 import 'package:beta_project/screens/car_list_screen.dart';
 import 'package:beta_project/screens/about_app_screen.dart';
+import 'package:beta_project/screens/profile_screen.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/splash',
@@ -53,6 +54,10 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/about-app',
       builder: (context, state) => const AboutAppScreen(),
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
   ],
 );

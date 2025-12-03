@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:beta_project/widgets/login_required_dialog.dart';
 
 class AppMenu extends StatefulWidget {
   final bool isMenuOpen;
@@ -31,7 +32,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   // Data is now fetched from the repository
   final _carRepository = CarRepositoryImpl.instance;
-  final List<String> _mainMenuItems = ['Car Selection', 'Discover', 'Car Specs', 'About App'];
+  final List<String> _mainMenuItems = ['Car Selection', 'Discover', 'Car Specs', 'About App', 'Profile'];
 
   @override
   void initState() {
@@ -88,6 +89,20 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
     if (menuKey == 'About App') {
       widget.toggleMenu();
       context.go('/about-app');
+      return;
+    }
+    if (menuKey == 'Profile') {
+      final authState = context.read<AuthCubit>().state;
+      if (authState is AuthAuthenticated) {
+        widget.toggleMenu();
+        context.go('/profile');
+      } else {
+        // Show Login Required Dialog
+        showDialog(
+          context: context,
+          builder: (context) => const LoginRequiredDialog(),
+        );
+      }
       return;
     }
     context.read<AppMenuCubit>().selectMenu(menuKey);
