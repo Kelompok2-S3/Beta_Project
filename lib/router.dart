@@ -4,6 +4,8 @@ import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:beta_project/screens/home_screen.dart';
 import 'package:beta_project/screens/splash_screen.dart';
 import 'package:beta_project/screens/auth_screen.dart';
+import 'package:beta_project/screens/our_story_screen.dart';
+import 'package:beta_project/screens/team_profiles_screen.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/splash',
@@ -33,6 +35,14 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const AuthScreen(),
+    ),
+    GoRoute(
+      path: '/our-story',
+      builder: (context, state) => const OurStoryScreen(),
+    ),
+    GoRoute(
+      path: '/team-profiles',
+      builder: (context, state) => const TeamProfilesScreen(),
     ),
   ],
 );

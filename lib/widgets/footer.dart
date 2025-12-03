@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 
 class Footer extends StatelessWidget {
   final bool isActive;
@@ -39,6 +40,27 @@ class Footer extends StatelessWidget {
             )
             .animate(target: isActive ? 1 : 0)
             .fade(duration: 900.ms, delay: 200.ms)
+            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
+            
+            const SizedBox(height: 20),
+
+            // Navigation Links
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => context.go('/our-story'),
+                  child: const Text('Our Story', style: TextStyle(color: Colors.white70)),
+                ),
+                const SizedBox(width: 20),
+                TextButton(
+                  onPressed: () => context.go('/team-profiles'),
+                  child: const Text('About Us', style: TextStyle(color: Colors.white70)),
+                ),
+              ],
+            )
+            .animate(target: isActive ? 1 : 0)
+            .fade(duration: 900.ms, delay: 300.ms)
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
 
             const SizedBox(height: 30),

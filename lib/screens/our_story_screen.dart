@@ -1,10 +1,9 @@
-
 import 'package:beta_project/config/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-class AboutUsScreen extends StatelessWidget {
-  const AboutUsScreen({super.key});
+class OurStoryScreen extends StatelessWidget {
+  const OurStoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

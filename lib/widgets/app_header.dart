@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:beta_project/data/car_repository.dart';
-import 'package:beta_project/screens/about_us_screen.dart';
+
 import 'package:beta_project/screens/discover_detail_screen.dart';
 import 'package:beta_project/widgets/car_search_delegate.dart';
 import 'package:flutter/material.dart';
@@ -75,12 +75,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       tooltip: 'Search Cars',
     );
 
-    void navigateToAbout() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const AboutUsScreen()),
-      );
-    }
+
 
     void navigateToServices() {
       Navigator.push(
@@ -131,12 +126,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                       } catch (_) {}
                     }),
                     _buildNavButton(context, 'Discover', onPressed: navigateToServices),
-                    _buildNavButton(context, 'About', onPressed: navigateToAbout),
+
                     searchButton,
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> cfb2378d216eb6d7691706af2e2b1f00a0c3e270
                     BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
                         if (state is AuthAuthenticated) {
@@ -147,15 +138,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         return _buildNavButton(context, 'Login', onPressed: () => context.go('/login'));
                       },
                     ),
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-                    _buildNavButton(context, 'Login', onPressed: () => context.go('/login')),
-=======
->>>>>>> 37d8daf4f9a92a5bff78a4f4395d721b55da4a70
->>>>>>> 8cd9e3ab77931b854e8024ae6ecf2185a8288932
->>>>>>> cfb2378d216eb6d7691706af2e2b1f00a0c3e270
                     const SizedBox(width: 8),
                     menuButton,
                   ],
