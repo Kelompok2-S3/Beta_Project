@@ -132,7 +132,10 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     _buildNavButton(context, 'Discover', onPressed: navigateToServices),
                     _buildNavButton(context, 'About', onPressed: navigateToAbout),
                     searchButton,
+<<<<<<< HEAD
                     _buildNavButton(context, 'Login', onPressed: () => context.go('/login')),
+=======
+>>>>>>> 37d8daf4f9a92a5bff78a4f4395d721b55da4a70
                     const SizedBox(width: 8),
                     menuButton,
                   ],
