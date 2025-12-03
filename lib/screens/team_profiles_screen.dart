@@ -135,7 +135,7 @@ class TeamProfilesScreen extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final member = _teamMembers[index];
-                      return _buildTeamMemberCard(member, index);
+                      return TeamMemberCard(member: member, index: index);
                     },
                     childCount: _teamMembers.length,
                   ),
@@ -149,99 +149,134 @@ class TeamProfilesScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildTeamMemberCard(Map<String, String> member, int index) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
-                  image: DecorationImage(
-                    image: AssetImage(member['image']!),
-                    fit: BoxFit.cover,
-                  ),
+class TeamMemberCard extends StatefulWidget {
+  final Map<String, String> member;
+  final int index;
+
+  const TeamMemberCard({super.key, required this.member, required this.index});
+
+  @override
+  State<TeamMemberCard> createState() => _TeamMemberCardState();
+}
+
+class _TeamMemberCardState extends State<TeamMemberCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: _isHovered ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(0.1),
                 ),
+                boxShadow: _isHovered
+                    ? [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.2),
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                        ),
+                      ]
+                    : [],
               ),
-              const SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  member['name']!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              if (member['isLeader'] == 'true') ...[
-                const SizedBox(height: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.amber.withOpacity(0.5)),
-                  ),
-                  child: const Text(
-                    'LEADER',
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
-              ],
-              const SizedBox(height: 4),
-              Text(
-                member['nim']!,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                member['role']!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.blue[400],
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (member['instagram'] != null)
-                    _buildSocialIcon(Icons.camera_alt, member['instagram']!),
-                  const SizedBox(width: 15),
-                  if (member['github'] != null)
-                    _buildSocialIcon(Icons.code, member['github']!),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                      image: DecorationImage(
+                        image: AssetImage(widget.member['image']!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      widget.member['name']!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  if (widget.member['isLeader'] == 'true') ...[
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.amber.withOpacity(0.5)),
+                      ),
+                      child: const Text(
+                        'LEADER',
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.member['nim']!,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.member['role']!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.blue[400],
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (widget.member['instagram'] != null)
+                        _buildSocialIcon(Icons.camera_alt, widget.member['instagram']!),
+                      const SizedBox(width: 15),
+                      if (widget.member['github'] != null)
+                        _buildSocialIcon(Icons.code, widget.member['github']!),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
-    ).animate().fadeIn(delay: (100 * index).ms).scale();
+      ).animate().fadeIn(delay: (100 * widget.index).ms).scale(),
+    );
   }
 
   Widget _buildSocialIcon(IconData icon, String url) {
