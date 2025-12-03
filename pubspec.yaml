@@ -45,7 +45,7 @@ flutter:
     - assets/images/Ascari/
     - assets/images/Aston Martin/
     - assets/images/Audi/
-    - assets/images/Austin hayley/
+    - assets/images/Austin-Healey/
     - assets/images/Auto/
     - assets/images/BAC/
     - assets/images/BMW/
@@ -73,10 +73,14 @@ flutter:
     - assets/images/Maserati/
     - assets/images/Mazda/
     - assets/images/McLaren/
-    - assets/images/Mercedes/
+    - assets/images/Mercedes-Benz/
+    - assets/images/Mercedes-AMG/
+    - assets/images/Mercury/
+    - assets/images/Meyers/
     - assets/images/Mitsubishi/
     - assets/images/Nissan/
     - assets/images/Pagani/
+    - assets/images/Plymouth/
     - assets/images/Porsche/
     - assets/images/Renault/
     - assets/images/Subaru/

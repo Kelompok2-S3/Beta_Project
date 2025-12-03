@@ -25,6 +25,14 @@ class CarModelCard extends StatelessWidget {
               child: Image.asset(
                 model.assetPath,
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[900],
+                    child: const Center(
+                      child: Icon(Icons.broken_image, color: Colors.white54, size: 50),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(height: 10), // Drastically reduced space to fix overflow

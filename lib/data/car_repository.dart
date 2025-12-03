@@ -119,29 +119,23 @@ class CarRepositoryImpl implements domain.CarRepository {
     String displayName = modelName.replaceAll('_', ' ');
     
     // Construct Asset Path
-    // Matches the scraper's logic: assets/images/Brand/Model_Name.png
-    // Note: Scraper uses clean_filename which removes special chars.
-    // We'll try to match that.
+    // Matches the scraper's logic: assets/images/Brand/Brand_Model_Name.png
+    // The scraper seems to prefix the filename with the Brand name again.
+    // Example: Volkswagen_Volkswagen_1107_Desert_Dingo_Racing_Stock_Bug.png
+    
     String cleanBrand = apiCar.brand.replaceAll(RegExp(r'[\\/*?:"<>|]'), "").trim();
-    String cleanModel = modelName.replaceAll(RegExp(r'[\\/*?:"<>|]'), "").trim();
     
-    // The scraper seems to have saved files with underscores if the URL had them.
-    // Let's use the exact segment from URL as filename base if possible, 
-    // but the scraper code used `clean_filename(model_name)`.
-    // If model_name came from `url.split('/')[-1].replace('_', ' ')`, it has spaces.
-    // So filename has spaces.
-    // BUT user saw `Ferrari_Ferrari_SF90_Stradale.png`.
-    // This implies the URL segment was `Ferrari_Ferrari_SF90_Stradale` and `replace` didn't happen or I'm confused.
-    // Let's try to be robust: check both with spaces and underscores?
-    // We can't check file existence easily here.
-    // Let's stick to the most likely path: `assets/images/$cleanBrand/$cleanModel.png` (with spaces if modelName has spaces).
-    // If the user says the file is `Ferrari_Ferrari_SF90_Stradale.png`, that has underscores.
-    // So maybe I should NOT replace underscores in the filename construction?
-    // Let's try to keep underscores for the filename if the URL has them.
-    String filenameBase = apiCar.sourceUrl.split('/').last; // Keep underscores
-    String filename = filenameBase.replaceAll(RegExp(r'[\\/*?:"<>|]'), "").trim();
+    // Extract the model part from the URL, which seems to be what the scraper used as base
+    String urlModelPart = apiCar.sourceUrl.split('/').last;
     
-    String assetPath = 'assets/images/$cleanBrand/$filename.png';
+    // The scraper logic likely was: f"{clean_brand}_{clean_filename(model_name)}.png"
+    // And model_name came from the URL.
+    
+    String filename = '${cleanBrand}_$urlModelPart.png';
+    // Sanitize filename just in case, but keep underscores
+    filename = filename.replaceAll(RegExp(r'[\\/*?:"<>|]'), "");
+    
+    String assetPath = 'assets/images/$cleanBrand/$filename';
 
     return CarModel(
       name: displayName,
