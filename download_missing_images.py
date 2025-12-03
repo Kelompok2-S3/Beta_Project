@@ -17,7 +17,7 @@ def fetch_all_cars():
         response = requests.get(API_URL)
         response.raise_for_status()
         data = response.json()
-        return data.get('cars', [])
+        return data.get('data', []) # Changed from 'cars' to 'data'
     except Exception as e:
         print(f"Error fetching cars: {e}")
         return []
@@ -51,8 +51,8 @@ def main():
     downloaded_count = 0
     
     for car in cars:
-        brand = car.get('brand', 'Unknown')
-        source_url = car.get('source_url', '')
+        brand = car.get('Merek', 'Unknown') # Changed from 'brand'
+        source_url = car.get('Source URL', '') # Changed from 'source_url'
         
         # Logic to match CarRepository
         clean_brand = get_clean_filename(brand.strip())
