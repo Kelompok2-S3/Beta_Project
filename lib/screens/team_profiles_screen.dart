@@ -2,8 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TeamProfilesScreen extends StatelessWidget {
   const TeamProfilesScreen({super.key});
@@ -15,42 +15,56 @@ class TeamProfilesScreen extends StatelessWidget {
       'role': 'Fullstack Developer',
       'image': 'assets/images/profile/RizmaIndraPramudya.jpg',
       'isLeader': 'true',
+      'github': 'https://github.com/Drappy-cat',
+      'instagram': 'https://www.instagram.com/draapy_?igsh=MXc3cjlqYjFzejI2dA==',
     },
     {
       'name': 'Putera Al Khalidi',
       'nim': '24111814077',
       'role': 'Fullstack Developer',
       'image': 'assets/images/profile/Putera.jpg',
+      'github': 'https://github.com/Anuvbis12',
+      'instagram': 'https://www.instagram.com/kuboo.18?igsh=MTVheGQ2OGlmcHdtcQ==',
     },
     {
       'name': 'Muhammad Abdullah Ro’in',
       'nim': '24111814054',
       'role': 'Database Engineer',
       'image': 'assets/images/profile/Roin.jpg',
+      'github': 'https://github.com/Kirisaki-zero',
+      'instagram': 'https://www.instagram.com/roin3163?igsh=N2xiYXR5c3p6aXF0',
     },
     {
       'name': 'Rendy Agus Dwi Satrio',
       'nim': '24111814094',
-      'role': 'Database Engineer',
+      'role': 'Frontend Developer',
       'image': 'assets/images/profile/RendyAgusDwiSatrio.jpg',
+      'github': 'https://github.com/satrio-cvly',
+      'instagram': 'https://www.instagram.com/____.r.ndy404?igsh=Y292eGliZWZleWQ0&utm_source=qr',
     },
     {
       'name': 'Naufal Yudantara Saputra',
       'nim': '24111814023',
       'role': 'Writer',
       'image': 'assets/images/profile/NaufalYudantaraSaputra.jpg',
+      'github': 'https://github.com/naufalyudantara07',
+      'instagram': 'https://www.instagram.com/nuflydtr7?igsh=OHR6cG9hNTYzMWNy&utm_source=qr',
     },
     {
       'name': 'Muhammad Dava Firmansyah',
       'nim': '24111814030',
       'role': 'Writer',
       'image': 'assets/images/profile/MuhammadDavaFirmansyah.jpg',
+      'github': 'https://github.com/mdavafirmansyah',
+      'instagram': 'https://www.instagram.com/amad_firmn?igsh=MWtqa3htdWFjNW9kcA==',
     },
     {
       'name': 'Naufal Akbar PP',
       'nim': '24111814027',
       'role': 'Writer',
       'image': 'assets/images/profile/NaufalAkbar.jpg',
+      'github': 'https://github.com/nopalPwaelah',
+      'instagram': 'https://www.instagram.com/fallsapprdn05_?igsh=aHRscm5udTJhazd5',
     },
   ];
 
@@ -116,7 +130,7 @@ class TeamProfilesScreen extends StatelessWidget {
                     maxCrossAxisExtent: 300,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
-                    childAspectRatio: 0.7, // Adjusted for extra badge
+                    childAspectRatio: 0.7,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -216,9 +230,11 @@ class TeamProfilesScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildSocialIcon('assets/images/utility/instagram.png'), // Placeholder or IconData
+                  if (member['instagram'] != null)
+                    _buildSocialIcon(Icons.camera_alt, member['instagram']!),
                   const SizedBox(width: 15),
-                  _buildSocialIcon('assets/images/utility/github.png'), // Placeholder or IconData
+                  if (member['github'] != null)
+                    _buildSocialIcon(Icons.code, member['github']!),
                 ],
               ),
             ],
@@ -228,39 +244,32 @@ class TeamProfilesScreen extends StatelessWidget {
     ).animate().fadeIn(delay: (100 * index).ms).scale();
   }
 
-  Widget _buildSocialIcon(String assetPath) {
-    // Using standard Icons for now as requested "instagram dan github"
-    // If specific assets are needed, I'd use Image.asset.
-    // But usually "Icon" implies IconData. 
-    // However, Flutter doesn't have built-in Insta/Github icons in Material Icons.
-    // I will use text or generic icons if font_awesome_flutter is not available.
-    // Checking pubspec... no font_awesome.
-    // I will use generic icons for now and ask user or use images if available.
-    // Wait, user said "icon nya".
-    // I'll use Icons.code for Github and Icons.camera_alt for Instagram as placeholders
-    // OR better, I'll just use the text "IG" and "GH" or similar if no icons.
-    // ACTUALLY, I can use `assets/images/utility/` if they exist?
-    // Let's check if I can use standard icons that look similar.
-    // Github -> Icons.code (or similar)
-    // Instagram -> Icons.camera_alt
-    
-    IconData icon;
-    if (assetPath.contains('instagram')) {
-      icon = Icons.camera_alt; // Placeholder for Instagram
-    } else {
-      icon = Icons.code; // Placeholder for Github
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        icon,
-        color: Colors.white,
-        size: 20,
+  Widget _buildSocialIcon(IconData icon, String url) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () async {
+          final uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            debugPrint('Could not launch $url');
+          }
+        },
+        borderRadius: BorderRadius.circular(50),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
       ),
     );
   }
