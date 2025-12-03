@@ -100,7 +100,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'BRAND',
+                'GEARGAUGE',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,

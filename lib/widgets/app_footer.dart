@@ -42,30 +42,13 @@ class AppFooter extends StatelessWidget {
           const Divider(color: Colors.white24),
           const SizedBox(height: 20),
 
-          // Social Icons & Copyright
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () => _launchURL('https://www.facebook.com/KoenigseggAutomotiveAB'),
-                    icon: const Icon(Icons.facebook, color: Colors.white, size: 24),
-                  ),
-                  const SizedBox(width: 20),
-                  IconButton(
-                    onPressed: () => _launchURL('https://www.instagram.com/koenigsegg'),
-                    icon: const Icon(Icons.camera_alt, color: Colors.white, size: 24),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '© 2024 Koenigsegg Automotive AB. All rights reserved.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white54, fontSize: 12),
-              ),
-            ],
+          // Copyright
+          const Center(
+            child: Text(
+              '© 2024 Koenigsegg Automotive AB. All rights reserved.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white54, fontSize: 12),
+            ),
           ).animate(target: isActive ? 1 : 0).fade(duration: 600.ms, delay: 200.ms),
         ],
       ),
@@ -80,9 +63,6 @@ class AppFooter extends StatelessWidget {
         [
           _buildFooterLink(context, 'Our Story', () => context.go('/our-story')),
           _buildFooterLink(context, 'About Us', () => context.go('/team-profiles')),
-          _buildFooterLink(context, 'Contact', () {}),
-          _buildFooterLink(context, 'Careers', () {}),
-          _buildFooterLink(context, 'Press', () {}),
         ],
       ),
       _buildFooterColumn(
@@ -90,9 +70,6 @@ class AppFooter extends StatelessWidget {
         'Services',
         [
           _buildFooterLink(context, 'Customer Login', () => context.go('/login')),
-          _buildFooterLink(context, 'Store', () {}),
-          _buildFooterLink(context, 'Find a Dealer', () {}),
-          _buildFooterLink(context, 'My Account', () {}),
         ],
       ),
       _buildFooterColumn(
@@ -100,8 +77,6 @@ class AppFooter extends StatelessWidget {
         'Community',
         [
           _buildFooterLink(context, 'Blog', () {}),
-          _buildFooterLink(context, 'Events', () {}),
-          _buildFooterLink(context, 'Forums', () {}),
         ],
       ),
     ];

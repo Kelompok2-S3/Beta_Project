@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       child: BlocProvider(
         create: (context) => AuthCubit(context.read<AuthRepository>()),
         child: MaterialApp.router(
-          title: 'Brand Showcase',
+          title: 'GearGauge',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.darkTheme,
           routerConfig: goRouter,
