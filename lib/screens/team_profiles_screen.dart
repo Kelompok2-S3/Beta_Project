@@ -10,8 +10,9 @@ class TeamProfilesScreen extends StatelessWidget {
     {
       'name': 'Rizma Indra Pramudya',
       'nim': '24111814117',
-      'role': '( Leader ) Fullstack Developer',
+      'role': 'Fullstack Developer',
       'image': 'assets/images/profile/RizmaIndraPramudya.jpg',
+      'isLeader': 'true',
     },
     {
       'name': 'Putera Al Khalidi',
@@ -113,7 +114,7 @@ class TeamProfilesScreen extends StatelessWidget {
                     maxCrossAxisExtent: 300,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
-                    childAspectRatio: 0.75, // Adjusted for extra text
+                    childAspectRatio: 0.7, // Adjusted for extra badge
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -172,6 +173,26 @@ class TeamProfilesScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              if (member['isLeader'] == 'true') ...[
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.amber.withOpacity(0.5)),
+                  ),
+                  child: const Text(
+                    'LEADER',
+                    style: TextStyle(
+                      color: Colors.amber,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 4),
               Text(
                 member['nim']!,
