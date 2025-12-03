@@ -5,9 +5,11 @@ import 'package:beta_project/domain/entities/car_model.dart';
 
 import 'package:beta_project/screens/car_detail_screen.dart';
 import 'package:beta_project/screens/discover_detail_screen.dart';
+import 'package:beta_project/cubits/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AppMenu extends StatefulWidget {
   final bool isMenuOpen;
@@ -108,7 +110,10 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
                       width: MediaQuery.of(context).size.width * 0.3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _mainMenuItems.map((key) => _buildMainMenuItem(key)).toList(),
+                        children: [
+                          ..._mainMenuItems.map((key) => _buildMainMenuItem(key)),
+                          _buildAuthMenuItem(),
+                        ],
                       ),
                     ),
                     Expanded(
@@ -140,6 +145,37 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     color: isSelected ? Colors.white : Colors.white70,
+                  ),
+            ),
+          ),
+        ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+      },
+    );
+  }
+
+  Widget _buildAuthMenuItem() {
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final bool isAuthenticated = state is AuthAuthenticated;
+        final String text = isAuthenticated ? 'Logout' : 'Login';
+        
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          child: GestureDetector(
+            onTap: () {
+              if (isAuthenticated) {
+                context.read<AuthCubit>().logout();
+                widget.toggleMenu(); // Close menu after logout
+              } else {
+                widget.toggleMenu(); // Close menu before navigating
+                context.go('/login');
+              }
+            },
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white70,
                   ),
             ),
           ),

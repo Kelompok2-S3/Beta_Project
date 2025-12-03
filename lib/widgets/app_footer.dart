@@ -1,15 +1,115 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppFooter extends StatelessWidget {
   final bool isActive;
 
   const AppFooter({super.key, required this.isActive});
 
-  // Helper widget for a single column of links
-  Widget _buildLinkColumn(String title, List<String> links) {
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      debugPrint('Could not launch $url');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFF191919),
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      child: Column(
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 768) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildFooterContent(context),
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _buildFooterContent(context),
+              );
+            },
+          ),
+          
+          const SizedBox(height: 40),
+          const Divider(color: Colors.white24),
+          const SizedBox(height: 20),
+
+          // Social Icons & Copyright
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => _launchURL('https://www.facebook.com/KoenigseggAutomotiveAB'),
+                    icon: const Icon(Icons.facebook, color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    onPressed: () => _launchURL('https://www.instagram.com/koenigsegg'),
+                    icon: const Icon(Icons.camera_alt, color: Colors.white, size: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                '© 2024 Koenigsegg Automotive AB. All rights reserved.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white54, fontSize: 12),
+              ),
+            ],
+          ).animate(target: isActive ? 1 : 0).fade(duration: 600.ms, delay: 200.ms),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildFooterContent(BuildContext context) {
+    return [
+      _buildFooterColumn(
+        context,
+        'About Us',
+        [
+          _buildFooterLink(context, 'Our Story', () => context.go('/our-story')),
+          _buildFooterLink(context, 'About Us', () => context.go('/team-profiles')),
+          _buildFooterLink(context, 'Contact', () {}),
+          _buildFooterLink(context, 'Careers', () {}),
+          _buildFooterLink(context, 'Press', () {}),
+        ],
+      ),
+      _buildFooterColumn(
+        context,
+        'Services',
+        [
+          _buildFooterLink(context, 'Customer Login', () => context.go('/login')),
+          _buildFooterLink(context, 'Store', () {}),
+          _buildFooterLink(context, 'Find a Dealer', () {}),
+          _buildFooterLink(context, 'My Account', () {}),
+        ],
+      ),
+      _buildFooterColumn(
+        context,
+        'Community',
+        [
+          _buildFooterLink(context, 'Blog', () {}),
+          _buildFooterLink(context, 'Events', () {}),
+          _buildFooterLink(context, 'Forums', () {}),
+        ],
+      ),
+    ];
+  }
+
+  Widget _buildFooterColumn(BuildContext context, String title, List<Widget> children) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+      padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -21,73 +121,24 @@ class AppFooter extends StatelessWidget {
               fontSize: 16,
             ),
           ),
-          const SizedBox(height: 15),
-          ...links.map((link) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              link,
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-          )),
+          const SizedBox(height: 20),
+          ...children,
         ],
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // List of link columns to avoid repetition
-    final List<Widget> linkColumns = [
-      _buildLinkColumn('About Us', ['Our Story', 'Contact', 'Careers', 'Press'])
-          .animate(target: isActive ? 1 : 0)
-          .fadeIn(duration: 900.ms, delay: 200.ms)
-          .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-      _buildLinkColumn('Services', ['Customer Login', 'Store', 'Find a Dealer', 'My Account'])
-          .animate(target: isActive ? 1 : 0)
-          .fadeIn(duration: 900.ms, delay: 350.ms)
-          .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-      _buildLinkColumn('Community', ['Blog', 'Events', 'Forums'])
-          .animate(target: isActive ? 1 : 0)
-          .fadeIn(duration: 900.ms, delay: 500.ms)
-          .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-    ];
-
-    return Container(
-      color: const Color(0xFF191919), // Dark grey background
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  // Use a column on narrow screens
-                  if (constraints.maxWidth < 768) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: linkColumns,
-                    );
-                  }
-                  // Use a row on wider screens
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: linkColumns,
-                  );
-                },
-              ),
-              const SizedBox(height: 40),
-              const Divider(color: Colors.white24, indent: 40, endIndent: 40),
-              const SizedBox(height: 20),
-              const Text(
-                '© 2024 Your Company. All rights reserved.',
-                style: TextStyle(color: Colors.white70, fontSize: 12),
-              )
-              .animate(target: isActive ? 1 : 0)
-              .fadeIn(duration: 900.ms, delay: 650.ms)
-              .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-            ],
+  Widget _buildFooterLink(BuildContext context, String text, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 14,
           ),
         ),
       ),

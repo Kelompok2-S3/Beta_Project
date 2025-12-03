@@ -1,6 +1,7 @@
 import 'package:beta_project/config/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 class OurStoryScreen extends StatelessWidget {
   const OurStoryScreen({super.key});
@@ -18,6 +19,10 @@ class OurStoryScreen extends StatelessWidget {
             backgroundColor: Colors.black,
             iconTheme: const IconThemeData(color: Colors.white),
             pinned: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.canPop() ? context.pop() : context.go('/'),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 'Our Story',
@@ -222,8 +227,10 @@ class _CoreValuesSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Wrap(
+            alignment: WrapAlignment.spaceEvenly,
+            spacing: 20,
+            runSpacing: 20,
             children: [
               _buildValuePillar(
                 context: context,
