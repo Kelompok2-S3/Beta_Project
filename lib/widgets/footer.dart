@@ -119,8 +119,9 @@ class Footer extends StatelessWidget {
   Widget _buildFooterLink(BuildContext context, String text, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: InkWell(
+      child: GestureDetector(
         onTap: onTap,
+        behavior: HitTestBehavior.opaque,
         child: Text(
           text,
           style: const TextStyle(
