@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:beta_project/cubits/auth_cubit.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -28,6 +30,8 @@ class _AuthScreenState extends State<AuthScreen> {
         _videoController.setLooping(true);
         _videoController.play();
         setState(() {});
+      }).catchError((error) {
+        debugPrint("Video initialization error: $error");
       });
   }
 
@@ -56,84 +60,89 @@ class _AuthScreenState extends State<AuthScreen> {
       return;
     }
 
-    // Mock Authentication Success
-    context.go('/');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(_isLogin ? 'Welcome back!' : 'Account created successfully!')),
-    );
+    final authCubit = context.read<AuthCubit>();
+    if (_isLogin) {
+      authCubit.login(_emailController.text, _passwordController.text);
+    } else {
+      authCubit.register(_emailController.text, _passwordController.text);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // Video Background
-          if (_videoController.value.isInitialized)
-            SizedBox.expand(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _videoController.value.size.width,
-                  height: _videoController.value.size.height,
-                  child: VideoPlayer(_videoController),
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthAuthenticated) {
+          context.go('/');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(_isLogin ? 'Welcome back, ${state.email}!' : 'Account created successfully!')),
+          );
+        } else if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            // Video Background
+            if (_videoController.value.isInitialized)
+              SizedBox.expand(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: _videoController.value.size.width,
+                    height: _videoController.value.size.height,
+                    child: VideoPlayer(_videoController),
+                  ),
                 ),
-              ),
-            )
-          else
-            Container(color: Colors.black),
+              )
+            else
+              Container(color: Colors.black),
 
-          // Overlay
-          Container(color: Colors.black.withOpacity(0.5)),
+            // Overlay
+            Container(color: Colors.black.withOpacity(0.5)),
 
-          // Content
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    width: 900, // Max width for the "card"
-                    constraints: const BoxConstraints(minHeight: 500),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        // Responsive Layout
-                        if (constraints.maxWidth > 700) {
-                          return Row(
-                            children: [
-                              Expanded(child: _buildFormSection()),
-                              Expanded(child: _buildDecorativeSection()),
-                            ],
-                          );
-                        } else {
-                          return _buildFormSection();
-                        }
-                      },
+            // Content
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      width: 500, // Max width for the "card"
+                      constraints: const BoxConstraints(minHeight: 500),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: Container(
+                        width: 500,
+                        padding: const EdgeInsets.all(20),
+                        child: _buildFormSection(),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          
-          // Back Button
-          Positioned(
-            top: 40,
-            left: 20,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => context.go('/'),
+            
+            // Back Button
+            Positioned(
+              top: 40,
+              left: 20,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => context.go('/'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -247,62 +256,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildDecorativeSection() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Abstract planets/stars decoration (mimicking the image provided)
-          Positioned(
-            top: 100,
-            right: 80,
-            child: _buildPlanet(20, Colors.blueGrey),
-          ),
-          Positioned(
-            bottom: 200,
-            left: 100,
-            child: _buildPlanet(60, Colors.lightBlueAccent),
-          ),
-          // Shooting star lines
-          Positioned(
-            top: 150,
-            left: 100,
-            child: Container(
-              width: 2,
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white.withOpacity(0), Colors.white],
-                ),
-              ),
-            ),
-          ),
-           Positioned(
-            bottom: 100,
-            right: 100,
-            child: const Text(
-              'BRAND',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -323,7 +277,7 @@ class _AuthScreenState extends State<AuthScreen> {
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withOpacity(0.3)),
           ),
           child: TextField(
             controller: controller,
@@ -367,25 +321,5 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Widget _buildPlanet(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, color.withOpacity(0.2)],
-          center: Alignment.topLeft,
-          radius: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.5),
-            blurRadius: 20,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-    );
-  }
+
 }

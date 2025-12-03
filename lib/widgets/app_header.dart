@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
+import 'package:beta_project/cubits/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -132,7 +133,16 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     _buildNavButton(context, 'Discover', onPressed: navigateToServices),
                     _buildNavButton(context, 'About', onPressed: navigateToAbout),
                     searchButton,
-                    _buildNavButton(context, 'Login', onPressed: () => context.go('/login')),
+                    BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        if (state is AuthAuthenticated) {
+                          return _buildNavButton(context, 'Logout', onPressed: () {
+                            context.read<AuthCubit>().logout();
+                          });
+                        }
+                        return _buildNavButton(context, 'Login', onPressed: () => context.go('/login'));
+                      },
+                    ),
                     const SizedBox(width: 8),
                     menuButton,
                   ],

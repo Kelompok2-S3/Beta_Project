@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:beta_project/data/auth_repository.dart';
+import 'package:beta_project/cubits/auth_cubit.dart';
 import 'package:beta_project/config/app_theme.dart';
 import 'package:beta_project/router.dart';
 
@@ -12,11 +15,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Brand Showcase',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      routerConfig: goRouter,
+    return RepositoryProvider(
+      create: (context) => AuthRepository(),
+      child: BlocProvider(
+        create: (context) => AuthCubit(context.read<AuthRepository>()),
+        child: MaterialApp.router(
+          title: 'Brand Showcase',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.darkTheme,
+          routerConfig: goRouter,
+        ),
+      ),
     );
   }
 }
