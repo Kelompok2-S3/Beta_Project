@@ -45,7 +45,7 @@ class AppFooter extends StatelessWidget {
           // Copyright
           const Center(
             child: Text(
-              '© 2024 Koenigsegg Automotive AB. All rights reserved.',
+              '© 2025 GearGauge. All rights reserved.',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white54, fontSize: 12),
             ),
