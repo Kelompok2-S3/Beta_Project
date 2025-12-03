@@ -126,11 +126,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         padding: const EdgeInsets.all(20),
                         child: _buildFormSection(),
                       ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+
             
             // Back Button
             Positioned(
