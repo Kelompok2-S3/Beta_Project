@@ -6,12 +6,14 @@ class CarService {
   // Use 10.0.2.2 for Android emulator to access localhost, or localhost for web/iOS simulator
   // Since this is likely web or windows, localhost should work.
   // If running on Android emulator, use 'http://10.0.2.2:5000/api/cars'
-  static const String _baseUrl = 'http://127.0.0.1:5000/api/cars'; 
+  // Deployed API on Hugging Face
+  static const String _apiDomain = 'https://drappy-cat-geargauge-api.hf.space';
+  static const String _baseUrl = '$_apiDomain/api/cars'; 
 
   Future<List<String>> fetchBrands() async {
     try {
-      print('CarService: Fetching brands from http://127.0.0.1:5000/api/brands');
-      final response = await _dio.get('http://127.0.0.1:5000/api/brands');
+      print('CarService: Fetching brands from $_apiDomain/api/brands');
+      final response = await _dio.get('$_apiDomain/api/brands');
       print('CarService: Brands response status: ${response.statusCode}');
       print('CarService: Brands data type: ${response.data.runtimeType}');
       
