@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // As per design
+      backgroundColor: Colors.black, // Dark background
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -173,12 +173,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       clipBehavior: Clip.none,
       alignment: Alignment.bottomCenter,
       children: [
-        // Blue Curve Background
+        // Dark Grey Curve Background
         Container(
           height: 200,
           width: double.infinity,
           decoration: const BoxDecoration(
-            color: Color(0xFF2196F3), // Blue color
+            color: Color(0xFF333333), // Dark grey color
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.elliptical(200, 30),
               bottomRight: Radius.elliptical(200, 30),
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF333333),
+                color: Colors.white,
               ),
             ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.5, end: 0),
             const SizedBox(height: 30),
@@ -300,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ElevatedButton(
                 onPressed: _saveProfileData,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2196F3),
+                  backgroundColor: const Color(0xFF333333),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: const Text(
@@ -338,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextFormField(
@@ -346,10 +346,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         readOnly: readOnly,
         onTap: onTap,
         keyboardType: keyboardType,
-        style: const TextStyle(color: Colors.black87),
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: Colors.grey[600]),
+          labelStyle: const TextStyle(color: Colors.white70),
+          prefixIcon: Icon(icon, color: Colors.white70),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),
@@ -367,21 +368,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButtonFormField<String>(
           value: _selectedGender,
-          hint: const Text('Select Gender'),
+          hint: const Text('Select Gender', style: TextStyle(color: Colors.white70)),
           decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.people_outline, color: Colors.grey),
+            prefixIcon: Icon(Icons.people_outline, color: Colors.white70),
             border: InputBorder.none,
           ),
           items: _genders.map((String gender) {
             return DropdownMenuItem<String>(
               value: gender,
-              child: Text(gender),
+              child: Text(gender, style: const TextStyle(color: Colors.white)),
             );
           }).toList(),
           onChanged: (String? newValue) {
