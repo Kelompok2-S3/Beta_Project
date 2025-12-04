@@ -11,7 +11,8 @@ import 'package:beta_project/features/car/pages/car_list_screen.dart';
 import 'package:beta_project/features/about/pages/about_app_screen.dart';
 import 'package:beta_project/features/profile/pages/profile_screen.dart';
 import 'package:beta_project/features/discover/pages/discover_detail_screen.dart';
-import 'package:beta_project/features/discover/pages/experience_detail_screen.dart'; // New import
+import 'package:beta_project/features/discover/pages/experience_detail_screen.dart';
+import 'package:beta_project/features/settings/pages/settings_screen.dart'; // Import SettingsScreen
 
 final goRouter = GoRouter(
   initialLocation: '/splash',
@@ -94,6 +95,10 @@ final goRouter = GoRouter(
           assetPath: assetPath,
         );
       },
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
     ),
   ],
 );

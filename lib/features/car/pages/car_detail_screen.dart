@@ -122,7 +122,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _darkBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           CustomScrollView(
@@ -162,7 +162,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       expandedHeight: _imageHeight,
-      backgroundColor: _darkBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
       pinned: true,
       stretch: true,
@@ -201,7 +201,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
       opacity: _isStickyHeaderVisible ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 300),
       child: Container(
-        color: const Color.fromRGBO(18, 18, 18, 0.9),
+        color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: SafeArea(
           bottom: false,
@@ -213,10 +213,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(widget.model.name,
-                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
                         overflow: TextOverflow.ellipsis),
                     Text('From ${_formatPrice(widget.model.price)}',
-                        style: TextStyle(color: Colors.grey[400], fontSize: 14)),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14)),
                   ],
                 ),
               ),
@@ -243,18 +243,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.model.brand.toUpperCase(),
-                style: TextStyle(color: Colors.grey[400], fontSize: 18, fontWeight: FontWeight.w500, letterSpacing: 1.2))
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 18, letterSpacing: 1.2))
                 .animate().fadeIn().slideX(begin: -0.1, end: 0),
             const SizedBox(height: 4),
             Text(widget.model.name,
-                style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold))
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 34))
                 .animate().fadeIn(delay: 100.ms).slideX(begin: -0.1, end: 0),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(_formatPrice(widget.model.price),
-                    style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500)),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 22)),
               ],
             ).animate().fadeIn(delay: 200.ms),
             const SizedBox(height: 24),
@@ -276,7 +276,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
     final items = keySpecs.entries.toList();
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
-      decoration: BoxDecoration(color: _darkCard, borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(items.length * 2 - 1, (index) {
@@ -294,9 +294,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
     return Flexible(
       child: Column(
         children: [
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+          Text(value, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20), textAlign: TextAlign.center),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: Colors.grey[400], fontSize: 12), textAlign: TextAlign.center),
+          Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 12), textAlign: TextAlign.center),
         ],
       ),
     );
@@ -313,8 +313,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
             controller: _tabController,
             indicatorColor: _primaryAccentColor,
             indicatorWeight: 3,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.grey[500],
+            labelColor: Theme.of(context).textTheme.bodyLarge?.color,
+            unselectedLabelColor: Theme.of(context).textTheme.bodyMedium?.color,
             labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             tabs: const [Tab(text: 'Overview'), Tab(text: 'Tech Specs'), Tab(text: 'Gallery')],
           ),
@@ -336,9 +336,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Description', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+        Text('Description', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 16),
-        Text(widget.model.description, style: const TextStyle(color: Color(0xFFa0a0a0), fontSize: 16, height: 1.6)),
+        Text(widget.model.description, style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6)),
       ],
     ).animate().fadeIn();
   }
@@ -375,13 +375,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
               
               return Container(
                 margin: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(color: _darkCard, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
                 child: ExpansionTile(
                   initiallyExpanded: true,
                   iconColor: _primaryAccentColor,
-                  collapsedIconColor: Colors.grey[400],
+                  collapsedIconColor: Theme.of(context).iconTheme.color,
                   tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  title: Text(category, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  title: Text(category, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18)),
                   children: [
                     const Divider(height: 1, color: Color(0xFF333333)),
                     Padding(
@@ -419,13 +419,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
               final group = validSpecGroups[index];
               return Container(
                 margin: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(color: _darkCard, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12)),
                 child: ExpansionTile(
                   initiallyExpanded: index == 0,
                   iconColor: _primaryAccentColor,
-                  collapsedIconColor: Colors.grey[400],
+                  collapsedIconColor: Theme.of(context).iconTheme.color,
                   tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  title: Text(group.title, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  title: Text(group.title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18)),
                   children: [
                     const Divider(height: 1, color: Color(0xFF333333)),
                     Padding(
@@ -452,9 +452,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(flex: 2, child: Text(label, style: TextStyle(fontSize: 15, color: Colors.grey[400]))),
+          Expanded(flex: 2, child: Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 15))),
           const SizedBox(width: 16),
-          Expanded(flex: 3, child: Text(value, textAlign: TextAlign.end, style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600))),
+          Expanded(flex: 3, child: Text(value, textAlign: TextAlign.end, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 15, fontWeight: FontWeight.w600))),
         ],
       ),
     );
@@ -477,7 +477,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
             galleryImages[index],
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
-                Container(color: _darkCard, child: const Icon(Icons.broken_image, color: Colors.grey)),
+                Container(color: Theme.of(context).cardColor, child: Icon(Icons.broken_image, color: Theme.of(context).iconTheme.color)),
           ),
         ).animate().fadeIn(delay: (100 * index).ms).scale();
       },

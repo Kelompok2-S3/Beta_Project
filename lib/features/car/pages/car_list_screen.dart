@@ -92,21 +92,21 @@ class _CarListScreenState extends State<CarListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).iconTheme.color),
           onPressed: () => context.go('/'),
         ),
         title: const Text(
           'Car Specs',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color, fontWeight: FontWeight.bold),
         ),
       ),
       body: _displayedCars.isEmpty && _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.white))
+          ? Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor))
           : ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(16),
@@ -116,7 +116,7 @@ class _CarListScreenState extends State<CarListScreen> {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(color: Colors.white),
+                      child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
                     ),
                   );
                 }
@@ -131,11 +131,11 @@ class _CarListScreenState extends State<CarListScreen> {
                 // For now, let's just display what we have.
                 
                 return Card(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Theme.of(context).cardColor,
                   margin: const EdgeInsets.only(bottom: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                    side: BorderSide(color: Theme.of(context).dividerColor),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,8 +149,8 @@ class _CarListScreenState extends State<CarListScreen> {
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
                             height: 150,
-                            color: Colors.grey[900],
-                            child: const Center(child: Icon(Icons.image_not_supported, color: Colors.white54)),
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            child: Icon(Icons.image_not_supported, color: Theme.of(context).iconTheme.color?.withOpacity(0.5)),
                           ),
                         ),
                       ),
@@ -165,8 +165,8 @@ class _CarListScreenState extends State<CarListScreen> {
                                 Expanded(
                                   child: Text(
                                     car.name, // Use display name
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: Theme.of(context).textTheme.titleLarge?.color,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -213,13 +213,13 @@ class _CarListScreenState extends State<CarListScreen> {
             width: 80,
             child: Text(
               label,
-              style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 14),
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 14),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
+              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 14),
             ),
           ),
         ],

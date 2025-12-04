@@ -33,7 +33,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   // Data is now fetched from the repository
   final _carRepository = CarRepositoryImpl.instance;
-  final List<String> _mainMenuItems = ['Car Selection', 'Discover', 'Car Specs', 'About App', 'Profile'];
+  final List<String> _mainMenuItems = ['Car Selection', 'Discover', 'Car Specs', 'About App', 'Profile', 'Settings'];
 
   @override
   void initState() {
@@ -97,6 +97,11 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
       }
       return;
     }
+    if (menuKey == 'Settings') {
+      widget.toggleMenu();
+      context.go('/settings');
+      return;
+    }
     context.read<AppMenuCubit>().selectMenu(menuKey);
   }
   @override
@@ -115,14 +120,14 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
         }
       },
       child: Container(
-        color: Colors.black.withAlpha(230),
+        color: Theme.of(context).scaffoldBackgroundColor.withAlpha(230),
         child: Stack(
           children: [
             Positioned(
               top: 20,
               right: 20,
               child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color, size: 32),
                 onPressed: widget.toggleMenu,
               ).animate(controller: _mainController).fade(duration: 400.ms, delay: 200.ms),
             ),
@@ -147,7 +152,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
                                       'Welcome, ${state.username}',
                                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Theme.of(context).textTheme.titleLarge?.color,
                                           ),
                                     ),
                                   ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
@@ -188,7 +193,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
               text,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected ? Colors.white : Colors.white70,
+                    color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).textTheme.bodyMedium?.color,
                   ),
             ),
           ),
@@ -219,7 +224,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
               text,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: Colors.white70,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
             ),
           ),
@@ -289,7 +294,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
               if (models.isEmpty)
                  const Padding(
                    padding: EdgeInsets.all(20.0),
-                   child: CircularProgressIndicator(color: Colors.white),
+                   child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
                  )
               else
                 Expanded(
@@ -311,7 +316,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
               child: Text(
                 "Choose Your Car",
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -374,7 +379,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
         padding: const EdgeInsets.only(bottom: 20.0),
         child: Row(
           children: [
-            const Icon(Icons.arrow_back_ios, color: Colors.white70, size: 16),
+            Icon(Icons.arrow_back_ios, color: Theme.of(context).iconTheme.color?.withOpacity(0.7), size: 16),
             const SizedBox(width: 8),
             Text(text, style: Theme.of(context).textTheme.bodyMedium),
           ],

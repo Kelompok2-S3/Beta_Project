@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         BlocProvider(create: (_) => AppMenuCubit()),
       ],
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Stack(
           children: [
             ListView(

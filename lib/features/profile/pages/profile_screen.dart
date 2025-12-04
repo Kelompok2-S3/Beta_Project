@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Dark background
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // Theme background
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -177,8 +177,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Container(
           height: 200,
           width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color(0xFF333333), // Dark grey color
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor, // Theme card color
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.elliptical(200, 30),
               bottomRight: Radius.elliptical(200, 30),
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                icon: Icon(Icons.arrow_back_ios_new, color: Theme.of(context).iconTheme.color),
                 onPressed: () => context.go('/'),
               ),
             ),
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Theme.of(context).textTheme.titleLarge?.color,
               ),
             ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.5, end: 0),
             const SizedBox(height: 30),
@@ -338,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextFormField(
@@ -346,11 +346,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         readOnly: readOnly,
         onTap: onTap,
         keyboardType: keyboardType,
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: Icon(icon, color: Colors.white70),
+          labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+          prefixIcon: Icon(icon, color: Theme.of(context).iconTheme.color),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),
@@ -368,21 +368,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButtonFormField<String>(
           value: _selectedGender,
-          hint: const Text('Select Gender', style: TextStyle(color: Colors.white70)),
+          hint: Text('Select Gender', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
           decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.people_outline, color: Colors.white70),
+            prefixIcon: Icon(Icons.people_outline, color: Theme.of(context).iconTheme.color),
             border: InputBorder.none,
           ),
           items: _genders.map((String gender) {
             return DropdownMenuItem<String>(
               value: gender,
-              child: Text(gender, style: const TextStyle(color: Colors.white)),
+              child: Text(gender, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
             );
           }).toList(),
           onChanged: (String? newValue) {
