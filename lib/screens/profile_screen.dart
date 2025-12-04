@@ -1,3 +1,9 @@
+/*
+ * Project: GearGauge
+ * Created by: Rizma Indra, Putera, Roin, Rendy, Naufal Y, Dava, Naufal A
+ * Year: 2025
+ */
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:beta_project/cubits/auth_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -186,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-        ),
+        ).animate().slideY(begin: -0.5, end: 0, duration: 600.ms, curve: Curves.easeOut),
         
         // Profile Image
         Positioned(
@@ -236,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ],
-          ),
+          ).animate().scale(delay: 300.ms, duration: 500.ms, curve: Curves.elasticOut),
         ),
       ],
     );
@@ -256,14 +263,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF333333),
               ),
-            ),
+            ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.5, end: 0),
             const SizedBox(height: 30),
             
             _buildTextField(
               controller: _usernameController,
               label: 'Username',
               icon: Icons.person_outline,
-            ),
+            ).animate().fadeIn(delay: 500.ms).slideX(begin: -0.1, end: 0),
             const SizedBox(height: 20),
             
             _buildTextField(
@@ -271,10 +278,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               label: 'Email',
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-            ),
+            ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.1, end: 0),
             const SizedBox(height: 20),
             
-            _buildDropdown(),
+            _buildDropdown().animate().fadeIn(delay: 700.ms).slideX(begin: -0.1, end: 0),
             const SizedBox(height: 20),
             
             _buildTextField(
@@ -283,7 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               icon: Icons.calendar_today_outlined,
               readOnly: true,
               onTap: () => _selectDate(context),
-            ),
+            ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.1, end: 0),
             
             const SizedBox(height: 40),
             
@@ -301,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
-            ),
+            ).animate().fadeIn(delay: 900.ms).scale(),
             
             const SizedBox(height: 20),
             
@@ -312,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               icon: const Icon(Icons.logout, color: Colors.red),
               label: const Text('Logout', style: TextStyle(color: Colors.red)),
-            ),
+            ).animate().fadeIn(delay: 1000.ms),
             
             const SizedBox(height: 40),
           ],

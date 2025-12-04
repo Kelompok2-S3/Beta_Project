@@ -1,7 +1,14 @@
+/*
+ * Project: GearGauge
+ * Created by: Rizma Indra, Putera, Roin, Rendy, Naufal Y, Dava, Naufal A
+ * Year: 2025
+ */
+
 import 'package:beta_project/domain/entities/car_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../models/car_model.dart' as api_model;
 import '../services/car_service.dart';
 
@@ -129,7 +136,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                 ),
               ),
             ),
-          ),
+          ).animate().fadeIn(delay: 300.ms),
         ],
       ),
     );
@@ -221,10 +228,12 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.model.brand.toUpperCase(),
-                style: TextStyle(color: Colors.grey[400], fontSize: 18, fontWeight: FontWeight.w500, letterSpacing: 1.2)),
+                style: TextStyle(color: Colors.grey[400], fontSize: 18, fontWeight: FontWeight.w500, letterSpacing: 1.2))
+                .animate().fadeIn().slideX(begin: -0.1, end: 0),
             const SizedBox(height: 4),
             Text(widget.model.name,
-                style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold)),
+                style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold))
+                .animate().fadeIn(delay: 100.ms).slideX(begin: -0.1, end: 0),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,11 +241,11 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                 Text(_formatPrice(widget.model.price),
                     style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500)),
               ],
-            ),
+            ).animate().fadeIn(delay: 200.ms),
             const SizedBox(height: 24),
-            _buildKeySpecifications(),
+            _buildKeySpecifications().animate().fadeIn(delay: 300.ms).slideY(begin: 0.1, end: 0),
             const SizedBox(height: 24),
-            _buildContentTabs(),
+            _buildContentTabs().animate().fadeIn(delay: 400.ms),
           ],
         ),
       ),
@@ -316,7 +325,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
         const SizedBox(height: 16),
         Text(widget.model.description, style: const TextStyle(color: Color(0xFFa0a0a0), fontSize: 16, height: 1.6)),
       ],
-    );
+    ).animate().fadeIn();
   }
 
   Widget _buildTechSpecsTab() {
@@ -370,7 +379,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                     ),
                   ],
                 ),
-              );
+              ).animate().fadeIn(delay: (100 * index).ms).slideX();
             },
           );
         }
@@ -414,7 +423,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                     ),
                   ],
                 ),
-              );
+              ).animate().fadeIn(delay: (100 * index).ms).slideX();
             },
           ),
         );
@@ -455,7 +464,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
             errorBuilder: (context, error, stackTrace) =>
                 Container(color: _darkCard, child: const Icon(Icons.broken_image, color: Colors.grey)),
           ),
-        );
+        ).animate().fadeIn(delay: (100 * index).ms).scale();
       },
     );
   }
