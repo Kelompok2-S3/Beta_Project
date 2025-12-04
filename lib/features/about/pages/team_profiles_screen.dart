@@ -16,7 +16,8 @@ class TeamProfilesScreen extends StatelessWidget {
       'image': 'assets/images/profile/RizmaIndraPramudya.jpg',
       'isLeader': 'true',
       'github': 'https://github.com/Drappy-cat',
-      'instagram': 'https://www.instagram.com/draapy_?igsh=MXc3cjlqYjFzejI2dA==',
+      'instagram':
+          'https://www.instagram.com/draapy_?igsh=MXc3cjlqYjFzejI2dA==',
     },
     {
       'name': 'Putera Al Khalidi',
@@ -24,7 +25,8 @@ class TeamProfilesScreen extends StatelessWidget {
       'role': 'Fullstack Developer',
       'image': 'assets/images/profile/Putera.jpg',
       'github': 'https://github.com/Anuvbis12',
-      'instagram': 'https://www.instagram.com/kuboo.18?igsh=MTVheGQ2OGlmcHdtcQ==',
+      'instagram':
+          'https://www.instagram.com/kuboo.18?igsh=MTVheGQ2OGlmcHdtcQ==',
     },
     {
       'name': 'Muhammad Abdullah Ro’in',
@@ -40,7 +42,8 @@ class TeamProfilesScreen extends StatelessWidget {
       'role': 'Frontend Developer',
       'image': 'assets/images/profile/RendyAgusDwiSatrio.jpg',
       'github': 'https://github.com/satrio-cvly',
-      'instagram': 'https://www.instagram.com/____.r.ndy404?igsh=Y292eGliZWZleWQ0&utm_source=qr',
+      'instagram':
+          'https://www.instagram.com/____.r.ndy404?igsh=Y292eGliZWZleWQ0&utm_source=qr',
     },
     {
       'name': 'Naufal Yudantara Saputra',
@@ -48,7 +51,8 @@ class TeamProfilesScreen extends StatelessWidget {
       'role': 'Writer',
       'image': 'assets/images/profile/NaufalYudantaraSaputra.jpg',
       'github': 'https://github.com/naufalyudantara07',
-      'instagram': 'https://www.instagram.com/nuflydtr7?igsh=OHR6cG9hNTYzMWNy&utm_source=qr',
+      'instagram':
+          'https://www.instagram.com/nuflydtr7?igsh=OHR6cG9hNTYzMWNy&utm_source=qr',
     },
     {
       'name': 'Muhammad Dava Firmansyah',
@@ -56,7 +60,8 @@ class TeamProfilesScreen extends StatelessWidget {
       'role': 'Writer',
       'image': 'assets/images/profile/MuhammadDavaFirmansyah.jpg',
       'github': 'https://github.com/mdavafirmansyah',
-      'instagram': 'https://www.instagram.com/amad_firmn?igsh=MWtqa3htdWFjNW9kcA==',
+      'instagram':
+          'https://www.instagram.com/amad_firmn?igsh=MWtqa3htdWFjNW9kcA==',
     },
     {
       'name': 'Naufal Akbar PP',
@@ -64,7 +69,8 @@ class TeamProfilesScreen extends StatelessWidget {
       'role': 'Writer',
       'image': 'assets/images/profile/NaufalAkbar.jpg',
       'github': 'https://github.com/nopalPwaelah',
-      'instagram': 'https://www.instagram.com/fallsapprdn05_?igsh=aHRscm5udTJhazd5',
+      'instagram':
+          'https://www.instagram.com/fallsapprdn05_?igsh=aHRscm5udTJhazd5',
     },
   ];
 
@@ -93,7 +99,7 @@ class TeamProfilesScreen extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Content
           CustomScrollView(
             slivers: [
@@ -122,9 +128,12 @@ class TeamProfilesScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 300,
@@ -132,16 +141,13 @@ class TeamProfilesScreen extends StatelessWidget {
                     crossAxisSpacing: 20,
                     childAspectRatio: 0.7,
                   ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final member = _teamMembers[index];
-                      return TeamMemberCard(member: member, index: index);
-                    },
-                    childCount: _teamMembers.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final member = _teamMembers[index];
+                    return TeamMemberCard(member: member, index: index);
+                  }, childCount: _teamMembers.length),
                 ),
               ),
-              
+
               const SliverToBoxAdapter(child: SizedBox(height: 40)),
             ],
           ),
@@ -182,7 +188,9 @@ class _TeamMemberCardState extends State<TeamMemberCard> {
                 color: Colors.white.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: _isHovered ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(0.1),
+                  color: _isHovered
+                      ? Colors.white.withOpacity(0.5)
+                      : Colors.white.withOpacity(0.1),
                 ),
                 boxShadow: _isHovered
                     ? [
@@ -202,7 +210,10 @@ class _TeamMemberCardState extends State<TeamMemberCard> {
                     height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 2,
+                      ),
                       image: DecorationImage(
                         image: AssetImage(widget.member['image']!),
                         fit: BoxFit.cover,
@@ -225,11 +236,16 @@ class _TeamMemberCardState extends State<TeamMemberCard> {
                   if (widget.member['isLeader'] == 'true') ...[
                     const SizedBox(height: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.amber.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.amber.withOpacity(0.5)),
+                        border: Border.all(
+                          color: Colors.amber.withOpacity(0.5),
+                        ),
                       ),
                       child: const Text(
                         'LEADER',
@@ -248,23 +264,25 @@ class _TeamMemberCardState extends State<TeamMemberCard> {
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.6),
                       fontSize: 12,
+                      fontWeight:
+                          FontWeight.bold, // ditambahkan untuk menebalkan NIM
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     widget.member['role']!,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.blue[400],
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.blue[400], fontSize: 14),
                   ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (widget.member['instagram'] != null)
-                        _buildSocialIcon(Icons.camera_alt, widget.member['instagram']!),
+                        _buildSocialIcon(
+                          Icons.camera_alt,
+                          widget.member['instagram']!,
+                        ),
                       const SizedBox(width: 15),
                       if (widget.member['github'] != null)
                         _buildSocialIcon(Icons.code, widget.member['github']!),
@@ -299,11 +317,7 @@ class _TeamMemberCardState extends State<TeamMemberCard> {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 20,
-          ),
+          child: Icon(icon, color: Colors.white, size: 20),
         ),
       ),
     );
