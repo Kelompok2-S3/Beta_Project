@@ -100,7 +100,7 @@ class _CarListScreenState extends State<CarListScreen> {
           icon: Icon(Icons.arrow_back, color: Theme.of(context).iconTheme.color),
           onPressed: () => context.go('/'),
         ),
-        title: const Text(
+        title: Text(
           'Car Specs',
           style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color, fontWeight: FontWeight.bold),
         ),

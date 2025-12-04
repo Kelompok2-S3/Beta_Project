@@ -256,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         key: _formKey,
         child: Column(
           children: [
-            const Text(
+            Text(
               'Edit Profile',
               style: TextStyle(
                 fontSize: 24,
