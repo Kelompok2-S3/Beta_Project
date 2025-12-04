@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:beta_project/screens/experience_detail_screen.dart';
+import 'package:beta_project/features/discover/pages/experience_detail_screen.dart'; // Updated import
+import 'package:go_router/go_router.dart'; // Added import for GoRouter
 
 class PromoSection extends StatelessWidget {
   final bool isActive;
@@ -56,15 +57,9 @@ class PromoSection extends StatelessWidget {
               const SizedBox(height: 40),
               OutlinedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ExperienceDetailScreen(
-                        experienceTitle: title,
-                        experienceDescription: description,
-                        assetPath: assetPath, // Pass the assetPath
-                      ),
-                    ),
+                  // Membangun URL dengan parameter kueri secara langsung
+                  context.go(
+                    '/experience-detail?title=${Uri.encodeComponent(title)}&description=${Uri.encodeComponent(description)}&assetPath=${Uri.encodeComponent(assetPath)}',
                   );
                 },
                 style: OutlinedButton.styleFrom(

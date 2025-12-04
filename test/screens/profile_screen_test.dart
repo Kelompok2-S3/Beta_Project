@@ -1,6 +1,7 @@
-import 'package:beta_project/cubits/auth_cubit.dart';
+import 'package:beta_project/features/authentication/cubit/auth_cubit.dart'; // Updated import
+import 'package:beta_project/features/authentication/cubit/auth_state.dart'; // Updated import
 import 'package:beta_project/data/auth_repository.dart';
-import 'package:beta_project/screens/profile_screen.dart';
+import 'package:beta_project/features/profile/pages/profile_screen.dart'; // Updated import
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,18 +10,41 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 
 // Mock AuthCubit
-class MockAuthCubit extends Mock implements AuthCubit {}
+class MockAuthCubit extends Mock implements AuthCubit {
+  // Mock the 'state' getter
+  @override
+  AuthState get state => super.noSuchMethod(
+        Invocation.getter(#state),
+        returnValue: AuthInitial(), // Provide a default return value
+      );
 
-// Mock AuthRepository
-class MockAuthRepository extends Mock implements AuthRepository {}
+  // Mock the 'stream' getter
+  @override
+  Stream<AuthState> get stream => super.noSuchMethod(
+        Invocation.getter(#stream),
+        returnValue: Stream.empty(), // Provide a default return value
+      );
+
+  // Mock the 'close' method
+  @override
+  Future<void> close() => super.noSuchMethod(
+        Invocation.method(#close, []),
+        returnValue: Future.value(),
+      );
+
+  // Mock the 'logout' method as it's used in ProfileScreen
+  @override
+  Future<void> logout() => super.noSuchMethod(
+        Invocation.method(#logout, []),
+        returnValue: Future.value(),
+      );
+}
 
 void main() {
   late MockAuthCubit mockAuthCubit;
 
   setUp(() {
     mockAuthCubit = MockAuthCubit();
-    when(() => mockAuthCubit.stream).thenAnswer((_) => Stream.value(const AuthAuthenticated('test@example.com')));
-    when(() => mockAuthCubit.close()).thenAnswer((_) async {});
     
     // Mock SharedPreferences with a fake image URL to avoid AssetImage
     SharedPreferences.setMockInitialValues({

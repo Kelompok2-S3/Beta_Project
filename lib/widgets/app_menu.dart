@@ -1,11 +1,12 @@
-import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
-import 'package:beta_project/cubits/app_menu/app_menu_state.dart';
+import 'package:beta_project/features/home/cubit/app_menu_cubit.dart';
+import 'package:beta_project/features/home/cubit/app_menu_state.dart';
 import 'package:beta_project/data/car_repository.dart';
 import 'package:beta_project/domain/entities/car_model.dart';
 
-import 'package:beta_project/screens/car_detail_screen.dart';
-import 'package:beta_project/screens/discover_detail_screen.dart';
-import 'package:beta_project/cubits/auth_cubit.dart';
+import 'package:beta_project/features/car/pages/car_detail_screen.dart';
+import 'package:beta_project/features/discover/pages/discover_detail_screen.dart';
+import 'package:beta_project/features/authentication/cubit/auth_cubit.dart'; // Updated import
+// import 'package:beta_project/features/authentication/cubit/auth_state.dart'; // Removed
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,18 +68,9 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
 
   void _onMainMenuSelected(String menuKey) {
     if (menuKey == 'Discover') {
-      // ... (existing discover logic)
       widget.toggleMenu();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DiscoverDetailScreen(
-            itemTitle: 'Discover Our Fleet',
-            itemSubtitle: 'Experience the pinnacle of automotive engineering.',
-            assetPath: 'assets/images/utility/oldcars.png',
-          ),
-        ),
-      );
+      // Menggunakan context.go untuk navigasi GoRouter
+      context.go('/discover-detail?subtitle=${Uri.encodeComponent('Experience the pinnacle of automotive engineering.')}&assetPath=${Uri.encodeComponent('assets/images/utility/oldcars.png')}', extra: 'Discover Our Fleet');
       return;
     }
     if (menuKey == 'Car Specs') {
@@ -232,7 +224,11 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   Widget _buildSubMenu() {
     return BlocBuilder<AppMenuCubit, AppMenuState>(
       builder: (context, state) {
-        if (state.selectedMenu != 'Car Selection') {
+        // Handle nullable selectedMenu and selectedBrand
+        final selectedMenu = state.selectedMenu;
+        final selectedBrand = state.selectedBrand;
+
+        if (selectedMenu != 'Car Selection') {
           return const SizedBox.shrink();
         }
 
@@ -252,7 +248,7 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
                  ElevatedButton.icon(
                    onPressed: () async {
                      await _carRepository.initialize();
-                     setState(() {});
+                     if (mounted) setState(() {});
                    },
                    icon: const Icon(Icons.refresh),
                    label: const Text("Retry Connection"),
@@ -266,8 +262,8 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
            );
         }
 
-        if (state.selectedBrand != null) {
-          final models = _carRepository.modelsByBrand[state.selectedBrand] ?? [];
+        if (selectedBrand != null) {
+          final models = _carRepository.modelsByBrand[selectedBrand] ?? [];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -340,10 +336,8 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
   Widget _buildModelMenuItem(CarModel model) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CarDetailScreen(model: model)),
-        );
+        // Use context.push to navigate to a named route, passing the model as an extra
+        context.push('/car/${Uri.encodeComponent(model.name)}', extra: model);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0),

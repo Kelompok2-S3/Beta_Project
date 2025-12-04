@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/car_model.dart';
+import 'package:beta_project/domain/entities/car_model.dart'; // Updated import
 
 class CarCard extends StatelessWidget {
-  final CarModel car;
+  final CarModel car; // Changed type to CarModel
 
   const CarCard({super.key, required this.car});
 

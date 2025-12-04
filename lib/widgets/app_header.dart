@@ -1,13 +1,13 @@
 import 'dart:ui';
 import 'package:beta_project/data/car_repository.dart';
 
-import 'package:beta_project/screens/discover_detail_screen.dart';
+import 'package:beta_project/features/discover/pages/discover_detail_screen.dart';
 import 'package:beta_project/widgets/car_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:beta_project/cubits/app_menu/app_menu_cubit.dart';
-import 'package:beta_project/cubits/auth_cubit.dart';
+import 'package:beta_project/features/home/cubit/app_menu_cubit.dart';
+import 'package:beta_project/features/authentication/cubit/auth_cubit.dart'; // Mengimpor auth_cubit.dart
 import 'package:go_router/go_router.dart';
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -78,15 +78,13 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
 
 
     void navigateToServices() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DiscoverDetailScreen(
-            itemTitle: 'Discover Our Fleet',
-            itemSubtitle: 'Discover the range of services we offer.',
-            assetPath: 'assets/images/utility/oldcars.png',
-          ),
-        ),
+      // Membangun URL dengan parameter kueri secara langsung
+      final String itemTitle = 'Discover Our Fleet';
+      final String itemSubtitle = 'Experience the pinnacle of automotive engineering.';
+      final String assetPath = 'assets/images/utility/oldcars.png';
+      
+      context.go(
+        '/discover-detail?itemTitle=${Uri.encodeComponent(itemTitle)}&itemSubtitle=${Uri.encodeComponent(itemSubtitle)}&assetPath=${Uri.encodeComponent(assetPath)}',
       );
     }
 

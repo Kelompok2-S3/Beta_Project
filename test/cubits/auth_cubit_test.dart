@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:beta_project/cubits/auth_cubit.dart';
+import 'package:beta_project/features/authentication/cubit/auth_cubit.dart'; // Updated import
+import 'package:beta_project/features/authentication/cubit/auth_state.dart'; // Updated import
 import 'package:beta_project/data/auth_repository.dart';
 
 // Mock AuthRepository
@@ -16,7 +17,7 @@ void main() {
     mockAuthRepository = MockAuthRepository();
     // Prevent checkAuthStatus from completing and emitting states by default
     when(() => mockAuthRepository.getCurrentUser()).thenAnswer((_) => Completer<String?>().future);
-    authCubit = AuthCubit(mockAuthRepository);
+    authCubit = AuthCubit(mockAuthRepository); // Pass mockAuthRepository to AuthCubit
   });
 
   tearDown(() {
@@ -52,7 +53,7 @@ void main() {
       act: (cubit) => cubit.login('test@example.com', 'wrongpassword'),
       expect: () => [
         AuthLoading(),
-        const AuthError('Invalid email or password'),
+        const AuthError('Invalid credentials.'), // Updated error message
       ],
     );
 
@@ -71,13 +72,14 @@ void main() {
     );
 
     blocTest<AuthCubit, AuthState>(
-      'emits [AuthUnauthenticated] when logout is called',
+      'emits [AuthLoading, AuthUnauthenticated] when logout is called',
       build: () {
         when(() => mockAuthRepository.logout()).thenAnswer((_) async {});
         return authCubit;
       },
       act: (cubit) => cubit.logout(),
       expect: () => [
+        AuthLoading(), // Logout also emits loading state first
         AuthUnauthenticated(),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:beta_project/screens/discover_detail_screen.dart';
+import 'package:beta_project/features/discover/pages/discover_detail_screen.dart'; // Updated import
+import 'package:go_router/go_router.dart'; // Added import for GoRouter
 
 class ContentSection extends StatelessWidget {
   final String title;
@@ -83,15 +84,9 @@ class ContentSection extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DiscoverDetailScreen(
-                            itemTitle: title,
-                            itemSubtitle: description,
-                            assetPath: assetPath,
-                          ),
-                        ),
+                      // Membangun URL dengan parameter kueri secara langsung
+                      context.go(
+                        '/discover-detail?itemTitle=${Uri.encodeComponent(title)}&itemSubtitle=${Uri.encodeComponent(description)}&assetPath=${Uri.encodeComponent(assetPath)}',
                       );
                     },
                     splashColor: Colors.white12,

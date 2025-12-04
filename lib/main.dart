@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beta_project/data/auth_repository.dart';
-import 'package:beta_project/cubits/auth_cubit.dart';
+import 'package:beta_project/features/authentication/cubit/auth_cubit.dart'; // Updated import
 import 'package:beta_project/config/app_theme.dart';
 import 'package:beta_project/router.dart';
 
