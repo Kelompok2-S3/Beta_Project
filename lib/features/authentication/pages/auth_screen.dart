@@ -61,27 +61,27 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     final authCubit = context.read<AuthCubit>();
-    // if (_isLogin) {
-    //   authCubit.login(_emailController.text, _passwordController.text);
-    // } else {
-    //   authCubit.register(_emailController.text, _passwordController.text);
-    // }
+    if (_isLogin) {
+      authCubit.login(_emailController.text, _passwordController.text);
+    } else {
+      authCubit.register(_emailController.text, _passwordController.text);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        // if (state is AuthAuthenticated) {
-        //   context.go('/');
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(_isLogin ? 'Welcome back, ${state.email}!' : 'Account created successfully!')),
-        //   );
-        // } else if (state is AuthError) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(content: Text(state.message)),
-        //   );
-        // }
+        if (state is AuthAuthenticated) {
+          context.go('/');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(_isLogin ? 'Welcome back, ${state.username}!' : 'Account created successfully!')),
+          );
+        } else if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
       },
       child: Scaffold(
         backgroundColor: Colors.black,

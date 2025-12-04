@@ -1,4 +1,5 @@
 import 'package:beta_project/data/car_repository.dart';
+import 'package:beta_project/domain/entities/car_model.dart'; // Import CarModel
 import 'package:go_router/go_router.dart';
 import 'package:beta_project/features/car/pages/car_detail_screen.dart';
 import 'package:beta_project/features/home/pages/home_screen.dart';
@@ -26,6 +27,11 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/car/:name',
       builder: (context, state) {
+        // First check if the car object was passed directly
+        if (state.extra is CarModel) {
+          return CarDetailScreen(model: state.extra as CarModel);
+        }
+
         final carName = Uri.decodeComponent(state.pathParameters['name']!);
         final car = CarRepositoryImpl.instance.findCarByName(carName);
         

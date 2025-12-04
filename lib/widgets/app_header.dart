@@ -129,9 +129,21 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
                         if (state is AuthAuthenticated) {
-                          return _buildNavButton(context, 'Logout', onPressed: () {
-                            context.read<AuthCubit>().logout();
-                          });
+                          return Row(
+                            children: [
+                              Text(
+                                'Welcome, ${state.username}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              _buildNavButton(context, 'Logout', onPressed: () {
+                                context.read<AuthCubit>().logout();
+                              }),
+                            ],
+                          );
                         }
                         return _buildNavButton(context, 'Login', onPressed: () => context.go('/login'));
                       },

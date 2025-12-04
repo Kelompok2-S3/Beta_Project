@@ -137,6 +137,24 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (MediaQuery.of(context).size.width < 768)
+                            BlocBuilder<AuthCubit, AuthState>(
+                              builder: (context, state) {
+                                if (state is AuthAuthenticated) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 20.0),
+                                    child: Text(
+                                      'Welcome, ${state.username}',
+                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                    ),
+                                  ).animate(controller: _mainController).slideX(begin: -0.2, end: 0, duration: 600.ms, curve: Curves.easeOutCubic).fadeIn();
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
                           ..._mainMenuItems.map((key) => _buildMainMenuItem(key)),
                           _buildAuthMenuItem(),
                         ],

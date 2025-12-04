@@ -20,6 +20,7 @@ def get_cars():
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 20))
         brand_filter = request.args.get('brand', None)
+        search_query = request.args.get('search', None)
         
         if not os.path.exists(CSV_FILE_PATH):
              return jsonify({"error": f"CSV file not found at {CSV_FILE_PATH}"}), 404
@@ -31,6 +32,14 @@ def get_cars():
             # Filter by brand if provided
             if brand_filter:
                 all_rows = [row for row in all_rows if row.get('Merek', '').strip().lower() == brand_filter.strip().lower()]
+
+            # Filter by search query if provided
+            if search_query:
+                query = search_query.lower()
+                all_rows = [
+                    row for row in all_rows 
+                    if query in row.get('Merek', '').lower() or query in row.get('Source URL', '').lower()
+                ]
 
             # Pagination logic
             start_index = (page - 1) * limit

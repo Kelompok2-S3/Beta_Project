@@ -111,6 +111,15 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
   }
 
   @override
+  void didUpdateWidget(CarDetailScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.model.name != oldWidget.model.name) {
+      _apiCarFuture = _fetchMatchingCar();
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _darkBackground,
@@ -132,7 +141,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> with SingleTickerProv
                 backgroundColor: Colors.black.withAlpha((0.5 * 255).round()),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                  onPressed: () => context.pop(), // Aksi Back
+                  onPressed: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/');
+                    }
+                  },
                 ),
               ),
             ),

@@ -2,7 +2,7 @@
 title: GearGauge API
 emoji: 🚗
 colorFrom: red
-colorTo: black
+colorTo: gray
 sdk: docker
 app_port: 7860
 ---

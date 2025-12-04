@@ -56,8 +56,6 @@ class CarSearchDelegate extends SearchDelegate<CarModel?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions = carRepository.searchCarsByName(query);
-
     if (query.isEmpty) {
       return Container(
         color: Colors.black,
@@ -69,23 +67,42 @@ class CarSearchDelegate extends SearchDelegate<CarModel?> {
 
     return Container(
       color: Colors.black,
-      child: ListView.builder(
-        itemCount: suggestions.length,
-        itemBuilder: (context, index) {
-          final car = suggestions[index];
-          return ListTile(
-            leading: Image.asset(
-              car.assetPath,
-              width: 80,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.image_not_supported),
-            ),
-            title: Text(car.name, style: const TextStyle(color: Colors.white)),
-            subtitle: Text(car.brand, style: const TextStyle(color: Colors.white70)),
-            onTap: () {
-              // When a suggestion is tapped, navigate to the detail screen
-              final encodedName = Uri.encodeComponent(car.name);
-              context.go('/car/$encodedName');
+      child: FutureBuilder<List<CarModel>>(
+        future: carRepository.searchCars(query),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(color: Colors.red));
+          }
+          
+          if (snapshot.hasError) {
+             return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white)));
+          }
+
+          final suggestions = snapshot.data ?? [];
+
+          if (suggestions.isEmpty) {
+             return const Center(child: Text('No cars found.', style: TextStyle(color: Colors.white54)));
+          }
+
+          return ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) {
+              final car = suggestions[index];
+              return ListTile(
+                leading: Image.asset(
+                  car.assetPath,
+                  width: 80,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.image_not_supported, color: Colors.white54),
+                ),
+                title: Text(car.name, style: const TextStyle(color: Colors.white)),
+                subtitle: Text(car.brand, style: const TextStyle(color: Colors.white70)),
+                onTap: () {
+                  // When a suggestion is tapped, navigate to the detail screen
+                  final encodedName = Uri.encodeComponent(car.name);
+                  context.push('/car/$encodedName', extra: car);
+                },
+              );
             },
           );
         },

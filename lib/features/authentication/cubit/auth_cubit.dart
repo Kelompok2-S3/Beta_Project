@@ -16,7 +16,8 @@ class AuthCubit extends Cubit<AuthState> {
       await Future.delayed(const Duration(seconds: 1));
       final success = await _authRepository.login(email, password);
       if (success) {
-        emit(AuthAuthenticated(email));
+        final username = await _authRepository.getUsername(email);
+        emit(AuthAuthenticated(email, username));
       } else {
         emit(const AuthError('Invalid credentials.'));
       }
@@ -32,7 +33,8 @@ class AuthCubit extends Cubit<AuthState> {
       await Future.delayed(const Duration(seconds: 1));
       final success = await _authRepository.register(email, password);
       if (success) {
-        emit(AuthAuthenticated(email));
+        final username = await _authRepository.getUsername(email);
+        emit(AuthAuthenticated(email, username));
       } else {
         emit(const AuthError('Registration failed. User might already exist.'));
       }

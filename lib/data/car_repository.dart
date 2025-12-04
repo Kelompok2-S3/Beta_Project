@@ -206,4 +206,15 @@ class CarRepositoryImpl implements domain.CarRepository {
         .where((car) => car.name.toLowerCase().contains(lowerCaseQuery))
         .toList();
   }
+
+  Future<List<CarModel>> searchCars(String query) async {
+    if (query.isEmpty) return [];
+    try {
+      final apiCars = await _carService.fetchCars(page: 1, limit: 50, search: query);
+      return apiCars.map((apiCar) => _mapApiCarToDomain(apiCar)).toList();
+    } catch (e) {
+      print("CarRepository: Error searching cars: $e");
+      return [];
+    }
+  }
 }

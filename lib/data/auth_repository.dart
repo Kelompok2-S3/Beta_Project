@@ -53,4 +53,9 @@ class AuthRepository {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_currentUserKey);
   }
+
+  Future<String> getUsername(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('${email}_username') ?? email.split('@')[0];
+  }
 }
