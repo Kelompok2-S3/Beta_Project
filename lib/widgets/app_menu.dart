@@ -292,8 +292,8 @@ class _AppMenuState extends State<AppMenu> with TickerProviderStateMixin {
             children: [
               _buildBackButton('Back to Brands'),
               if (models.isEmpty)
-                 const Padding(
-                   padding: EdgeInsets.all(20.0),
+                 Padding(
+                   padding: const EdgeInsets.all(20.0),
                    child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
                  )
               else

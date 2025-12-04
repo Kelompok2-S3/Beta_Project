@@ -113,9 +113,9 @@ class _CarListScreenState extends State<CarListScreen> {
               itemCount: _displayedCars.length + (_hasMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == _displayedCars.length) {
-                  return const Center(
+                  return Center(
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
                     ),
                   );

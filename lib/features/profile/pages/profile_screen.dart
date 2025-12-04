@@ -375,7 +375,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: DropdownButtonFormField<String>(
           value: _selectedGender,
           hint: Text('Select Gender', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             prefixIcon: Icon(Icons.people_outline, color: Theme.of(context).iconTheme.color),
             border: InputBorder.none,
           ),
